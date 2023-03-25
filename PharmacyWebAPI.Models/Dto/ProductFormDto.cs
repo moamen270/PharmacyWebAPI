@@ -6,21 +6,17 @@ namespace PharmacyWebAPI.Models.ViewModels
     public class ProductFormDto
     {
         public int Id { get; set; }
-        public string Name { get; set; } = "Empty";
-        public string Description { get; set; } = "Empty";
-
-        [Range(1, 1000)]
+        public string ArabicName { get; set; } = string.Empty;
+        public string EnglishName { get; set; } = string.Empty;
+        public string type { get; set; } = string.Empty;
+        public string Contraindications { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
+        public DateTime ExpDate { get; set; }
+        public int Stock { get; set; }
         public double ListPrice { get; set; } = 1;
-
-        [Range(1, 1000)]
         public double Price { get; set; } = 1;
+        public string ImgURL { get; set; } = string.Empty;
 
-        [Range(0, 5)]
-        public int Rate { get; set; }
-
-        public string ImgURL { get; set; }
-
-        public string? Comment { get; set; }
         public int BrandId { get; set; }
 
         [ValidateNever]
@@ -31,6 +27,9 @@ namespace PharmacyWebAPI.Models.ViewModels
         [ValidateNever]
         public Category? Category { get; set; }
 
+        public int StorageId { get; set; }
+        public Storage Storage { get; set; }
+
         [ValidateNever]
         public IEnumerable<Brand>? Brands { get; set; }
 
@@ -38,9 +37,6 @@ namespace PharmacyWebAPI.Models.ViewModels
         public IEnumerable<Category>? Categories { get; set; }
 
         [ValidateNever]
-        public IEnumerable<Rating> Rates { get; set; }
-
-        [ValidateNever]
-        public IEnumerable<Comment> Comments { get; set; }
+        public IEnumerable<Storage>? Storages { get; set; }
     }
 }
