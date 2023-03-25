@@ -15,14 +15,15 @@ namespace PharmacyWebAPI.Controllers
         {
             _unitOfWork = unitOfWork;
         }
+
         [HttpGet]
         [Route("Get")]
         public async Task<IActionResult> Get(int id)
         {
-            var obj = await  _unitOfWork.Category.GetAsync(id);
-            if(obj is null)
-            return BadRequest("Not Found");
-            return Ok(obj);
+            var obj = await _unitOfWork.Category.GetAsync(id);
+            if (obj is null)
+                return NotFound(new { success = false, message = "NotFound" });
+            return Ok(new { Category = obj });
         }
 
         [HttpGet]
@@ -30,14 +31,14 @@ namespace PharmacyWebAPI.Controllers
         public async Task<IActionResult> GetAll()
         {
             IEnumerable<Category> obj = await _unitOfWork.Category.GetAllAsync();
-            return Ok(obj);
+            return Ok(new { Categories = obj });
         }
 
         [HttpGet]
         [Route("Create")]
         public IActionResult Create()
         {
-            return Ok(new Category());
+            return Ok(new { Category = new Category() });
         }
 
         //POST
@@ -48,7 +49,7 @@ namespace PharmacyWebAPI.Controllers
             await _unitOfWork.Category.AddAsync(model);
             _unitOfWork.Save();
 
-            return Ok(new { success = true, message = "Create Created Successfully" });
+            return Ok(new { success = true, message = "Category Created Successfully", Category = model });
         }
 
         [HttpDelete]
@@ -62,7 +63,7 @@ namespace PharmacyWebAPI.Controllers
             _unitOfWork.Category.Delete(Category);
             _unitOfWork.Save();
 
-            return Ok(new { success = true, message = "Brand Deleted Successfully" });
+            return Ok(new { success = true, message = "Category Deleted Successfully" });
         }
 
         //POST
@@ -72,12 +73,12 @@ namespace PharmacyWebAPI.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(obj);
+                return BadRequest(new { success = false, message = "Error While Editing", Category = obj });
             }
 
             _unitOfWork.Category.Update(obj);
             _unitOfWork.Save();
-            return Ok(obj);
+            return Ok(new { success = true, message = "Category Updated Successfully", Category = obj });
         }
     }
 }
