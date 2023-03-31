@@ -2,8 +2,8 @@
 {
     public interface IUnitOfWork : IDisposable
     {
-        IProductRepository Product { get; }
-        IBrandRepository Brand { get; }
+        IDrugRepository Drug { get; }
+        IManufacturerRepository Manufacturer { get; }
         ICategoryRepository Category { get; }
         IUserRepository User { get; }
         IOrderRepository Order { get; }
@@ -11,6 +11,6 @@
         IPrescriptionRepository Prescription { get; }
         IPrescriptionDetailsRepository PrescriptionDetails { get; }
 
-        int Save();
+        Task<int> SaveAsynce();
     }
 }

@@ -20,6 +20,12 @@ namespace PharmacyWebAPI.DataAccess.Repository
             return entity;
         }
 
+        public async Task<IEnumerable<T>> AddRangeAsync(IEnumerable<T> entities)
+        {
+            await _context.Set<T>().AddRangeAsync(entities);
+            return entities;
+        }
+
         public Task<int> CountAsync() => _context.Set<T>().CountAsync();
 
         public Task<int> CountAsync(Expression<Func<T, bool>> filter) => _context.Set<T>().CountAsync(filter);
@@ -55,7 +61,7 @@ namespace PharmacyWebAPI.DataAccess.Repository
 
         public async Task<T>? GetAsync(int id) => await _context.Set<T>().FindAsync(id);
 
-        public async Task<T> GetFirstOrDefaultAsync(Expression<Func<T, bool>>? filter = null, Expression<Func<T, object>>[]? includeProperty = null)
+        public async Task<T> GetFirstOrDefaultAsync(Expression<Func<T, bool>>? filter = null, params Expression<Func<T, object>>[]? includeProperty)
         {
             IQueryable<T> query;
             if (filter != null)
