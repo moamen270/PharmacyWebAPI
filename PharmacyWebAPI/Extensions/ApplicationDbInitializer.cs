@@ -297,8 +297,6 @@ namespace PharmacyWebAPI.Extensions
                     Description = "Amoxicillin is an antibiotic used to treat a wide range of bacterial infections.",
                     PregnancyCategory = PregnancyCategory.B,
                     ImgURL = "https://www.drugs.com/images/pills/fio/amoxicillin-500mg.jpg",
-                    ManufacturerName = "Amoxil",
-                    CategoryName = "Antibiotics",
                     CategoryId = context.Categories.FirstOrDefault(x => x.Name == "Antibiotics").Id,
                     ManufacturerId = context.Manufacturers.FirstOrDefault(x => x.Name == "Amoxil").Id,
                 });
@@ -312,8 +310,6 @@ namespace PharmacyWebAPI.Extensions
                     Description = "Lisinopril is an angiotensin-converting enzyme (ACE) inhibitor used to treat high blood pressure and heart failure.",
                     PregnancyCategory = PregnancyCategory.D,
                     ImgURL = "https://www.drugs.com/images/pills/mmx/prinivil-10.jpg",
-                    ManufacturerName = "Prinivil",
-                    CategoryName = "Cardiovascular Health",
                     CategoryId = context.Categories.FirstOrDefault(x => x.Name == "Cardiovascular Health").Id,
                     ManufacturerId = context.Manufacturers.FirstOrDefault(x => x.Name == "Prinivil").Id,
                 });
@@ -327,8 +323,6 @@ namespace PharmacyWebAPI.Extensions
                     Description = "Simvastatin is a statin cholesterol-lowering medication used to reduce the risk of heart disease and stroke.",
                     PregnancyCategory = PregnancyCategory.X,
                     ImgURL = "https://www.drugs.com/images/pills/fio/simvastatin-20mg.jpg",
-                    ManufacturerName = "Zocor",
-                    CategoryName = "Cholesterol-Lowering Medication",
                     CategoryId = context.Categories.FirstOrDefault(x => x.Name == "Cholesterol-Lowering Medication").Id,
                     ManufacturerId = context.Manufacturers.FirstOrDefault(x => x.Name == "Zocor").Id,
                 });
@@ -342,8 +336,6 @@ namespace PharmacyWebAPI.Extensions
                     Description = "Metformin is an antidiabetic medication used to treat type 2 diabetes.",
                     PregnancyCategory = PregnancyCategory.B,
                     ImgURL = "https://www.drugs.com/images/pills/mmx/metformin-hydrochloride-500mg.jpg",
-                    ManufacturerName = "Riomet",
-                    CategoryName = "Antidiabetic Medication",
                     CategoryId = context.Categories.FirstOrDefault(x => x.Name == "Antidiabetic Medication").Id,
                     ManufacturerId = context.Manufacturers.FirstOrDefault(x => x.Name == "Riomet").Id,
                 });
@@ -357,8 +349,6 @@ namespace PharmacyWebAPI.Extensions
                     Description = "Levothyroxine is a thyroid hormone replacement medication used to treat hypothyroidism.",
                     PregnancyCategory = PregnancyCategory.A,
                     ImgURL = "https://www.drugs.com/images/pills/mmx/synthroid-50.jpg",
-                    ManufacturerName = "Levoxyl",
-                    CategoryName = "Thyroid Hormone Replacement Medication",
                     CategoryId = context.Categories.FirstOrDefault(x => x.Name == "Thyroid Hormone Replacement Medication").Id,
                     ManufacturerId = context.Manufacturers.FirstOrDefault(x => x.Name == "Levoxyl").Id,
                 });
@@ -372,8 +362,6 @@ namespace PharmacyWebAPI.Extensions
                     Description = "Omeprazole is a proton pump inhibitor (PPI) used to treat gastroesophageal reflux disease (GERD) and other acid-related conditions.",
                     PregnancyCategory = PregnancyCategory.C,
                     ImgURL = "https://www.drugs.com/images/pills/fio/omeprazole-20mg.jpg",
-                    ManufacturerName = "Losec",
-                    CategoryName = "Proton Pump Inhibitor (PPI)",
                     CategoryId = context.Categories.FirstOrDefault(x => x.Name == "Proton Pump Inhibitor (PPI)").Id,
                     ManufacturerId = context.Manufacturers.FirstOrDefault(x => x.Name == "Losec").Id,
                 })
@@ -388,8 +376,6 @@ namespace PharmacyWebAPI.Extensions
                     Description = "Aspirin is a nonsteroidal anti-inflammatory drug (NSAID) used to treat pain, fever, and inflammation. It is also used to prevent blood clots and reduce the risk of heart attack and stroke.",
                     PregnancyCategory = PregnancyCategory.D,
                     ImgURL = "https://www.drugs.com/images/pills/fio/aspirin-325mg.jpg",
-                    ManufacturerName = "Bayer",
-                    CategoryName = "Nonsteroidal Anti-Inflammatory Drug (NSAID)",
                     CategoryId = context.Categories.FirstOrDefault(x => x.Name == "Nonsteroidal Anti-Inflammatory Drug (NSAID)").Id,
                     ManufacturerId = context.Manufacturers.FirstOrDefault(x => x.Name == "Bayer").Id,
                 });
@@ -403,8 +389,6 @@ namespace PharmacyWebAPI.Extensions
                     Description = "Albuterol is a bronchodilator used to treat asthma and other breathing disorders.",
                     PregnancyCategory = PregnancyCategory.C,
                     ImgURL = "https://www.drugs.com/images/pills/fio/albuterol-sulfate-90.jpg",
-                    ManufacturerName = "Proventil",
-                    CategoryName = "Bronchodilator",
                     CategoryId = context.Categories.FirstOrDefault(x => x.Name == "Bronchodilator").Id,
                     ManufacturerId = context.Manufacturers.FirstOrDefault(x => x.Name == "Proventil").Id,
                 });
@@ -418,8 +402,6 @@ namespace PharmacyWebAPI.Extensions
                     Description = "Paracetamol is an analgesic and antipyretic medication used to treat mild to moderate pain and fever.",
                     PregnancyCategory = PregnancyCategory.B,
                     ImgURL = "https://www.drugs.com/images/pills/fio/paracetamol-500mg.jpg",
-                    ManufacturerName = "Panadol",
-                    CategoryName = "Analgesic and Antipyretic Medication",
                     CategoryId = context.Categories.FirstOrDefault(x => x.Name == "Analgesic and Antipyretic Medication").Id,
                     ManufacturerId = context.Manufacturers.FirstOrDefault(x => x.Name == "Panadol").Id,
                 });
@@ -433,8 +415,6 @@ namespace PharmacyWebAPI.Extensions
                     Description = "Citalopram is a selective serotonin reuptake inhibitor (SSRI) antidepressant used to treat depression and anxiety disorders.",
                     PregnancyCategory = PregnancyCategory.C,
                     ImgURL = "https://www.drugs.com/images/pills/fio/citalopram-20mg.jpg",
-                    ManufacturerName = "Celexa",
-                    CategoryName = "Selective Serotonin Reuptake Inhibitor (SSRI) Antidepressant",
                     CategoryId = context.Categories.FirstOrDefault(x => x.Name == "Selective Serotonin Reuptake Inhibitor (SSRI) Antidepressant").Id,
                     ManufacturerId = context.Manufacturers.FirstOrDefault(x => x.Name == "Celexa").Id,
                 });
@@ -448,8 +428,6 @@ namespace PharmacyWebAPI.Extensions
                     Description = "Warfarin is an anticoagulant medication used to prevent blood clots and reduce the risk of stroke and heart attack.",
                     PregnancyCategory = PregnancyCategory.X,
                     ImgURL = "https://www.drugs.com/images/pills/fio/warfarin-sodium-5mg.jpg",
-                    ManufacturerName = "Marevan",
-                    CategoryName = "Anticoagulant Medication",
                     CategoryId = context.Categories.FirstOrDefault(x => x.Name == "Anticoagulant Medication").Id,
                     ManufacturerId = context.Manufacturers.FirstOrDefault(x => x.Name == "Marevan").Id,
                 });
@@ -463,8 +441,6 @@ namespace PharmacyWebAPI.Extensions
                     Description = "Acetaminophen (also known as paracetamol) is a pain reliever and fever reducer.",
                     PregnancyCategory = PregnancyCategory.B,
                     ImgURL = "https://www.drugs.com/images/pills/mcneil-consumer/44-104.jpg",
-                    ManufacturerName = "Johnson & Johnson",
-                    CategoryName = "Pain Relief",
                     CategoryId = context.Categories.FirstOrDefault(x => x.Name == "Pain Relief").Id,
                     ManufacturerId = context.Manufacturers.FirstOrDefault(x => x.Name == "Johnson & Johnson").Id,
                 });
@@ -478,8 +454,6 @@ namespace PharmacyWebAPI.Extensions
                     Description = "Loratadine is an antihistamine used to treat allergies.",
                     PregnancyCategory = PregnancyCategory.B,
                     ImgURL = "https://www.drugs.com/images/pills/ultrahealth/ultrahealth-10.jpg",
-                    ManufacturerName = "Pfizer",
-                    CategoryName = "Allergy Relief",
                     CategoryId = context.Categories.FirstOrDefault(x => x.Name == "Allergy Relief").Id,
                     ManufacturerId = context.Manufacturers.FirstOrDefault(x => x.Name == "Pfizer").Id,
                 });
@@ -493,8 +467,6 @@ namespace PharmacyWebAPI.Extensions
                     Description = "Metoprolol is a beta-blocker used to treat high blood pressure and heart conditions.",
                     PregnancyCategory = PregnancyCategory.C,
                     ImgURL = "https://www.drugs.com/images/pills/myl/512-50.jpg",
-                    ManufacturerName = "Mylan",
-                    CategoryName = "Cardiovascular Health",
                     CategoryId = context.Categories.FirstOrDefault(x => x.Name == "Cardiovascular Health").Id,
                     ManufacturerId = context.Manufacturers.FirstOrDefault(x => x.Name == "Mylan").Id,
                 });
@@ -508,8 +480,6 @@ namespace PharmacyWebAPI.Extensions
                     Description = "Ciprofloxacin is an antibiotic used to treat bacterial infections.",
                     PregnancyCategory = PregnancyCategory.C,
                     ImgURL = "https://www.drugs.com/images/pills/apo/AC500-1.jpg",
-                    ManufacturerName = "Apotex",
-                    CategoryName = "Antibiotics",
                     CategoryId = context.Categories.FirstOrDefault(x => x.Name == "Antibiotics").Id,
                     ManufacturerId = context.Manufacturers.FirstOrDefault(x => x.Name == "Apotex").Id,
                 });
@@ -523,8 +493,6 @@ namespace PharmacyWebAPI.Extensions
                     Description = "Tadalafil is a phosphodiesterase-5 inhibitor used to treat erectile dysfunction and pulmonary arterial hypertension.",
                     PregnancyCategory = PregnancyCategory.B,
                     ImgURL = "https://www.drugs.com/images/pills/mfr/t20-1.jpg",
-                    ManufacturerName = "Eli Lilly and Company",
-                    CategoryName = "Men's Health",
                     CategoryId = context.Categories.FirstOrDefault(x => x.Name == "Men's Health").Id,
                     ManufacturerId = context.Manufacturers.FirstOrDefault(x => x.Name == "Eli Lilly and Company").Id,
                 });
@@ -538,8 +506,6 @@ namespace PharmacyWebAPI.Extensions
                     Description = "Sertraline is a selective serotonin reuptake inhibitor (SSRI) used to treat depression, anxiety, and obsessive-compulsive disorder.",
                     PregnancyCategory = PregnancyCategory.C,
                     ImgURL = "https://www.drugs.com/images/pills/gg/GG-249-1.jpg",
-                    ManufacturerName = "Greenstone LLC",
-                    CategoryName = "Mental Health",
                     CategoryId = context.Categories.FirstOrDefault(x => x.Name == "Mental Health").Id,
                     ManufacturerId = context.Manufacturers.FirstOrDefault(x => x.Name == "Greenstone LLC").Id,
                 });
@@ -553,8 +519,6 @@ namespace PharmacyWebAPI.Extensions
                     Description = "Hydrochlorothiazide is a thiazide diuretic used to treat high blood pressure and fluid retention.",
                     PregnancyCategory = PregnancyCategory.B,
                     ImgURL = "https://www.drugs.com/images/pills/gg/GG-165-1.jpg",
-                    ManufacturerName = "Sandoz",
-                    CategoryName = "Cardiovascular Health",
                     CategoryId = context.Categories.FirstOrDefault(x => x.Name == "Cardiovascular Health").Id,
                     ManufacturerId = context.Manufacturers.FirstOrDefault(x => x.Name == "Sandoz").Id,
                 });
@@ -568,8 +532,6 @@ namespace PharmacyWebAPI.Extensions
                     Description = "Amoxicillin is a penicillin antibiotic used to treat bacterial infections.",
                     PregnancyCategory = PregnancyCategory.B,
                     ImgURL = "https://www.drugs.com/images/pills/rx/rx829-1.jpg",
-                    ManufacturerName = "Ranbaxy Pharmaceuticals Inc.",
-                    CategoryName = "Antibiotics",
                     CategoryId = context.Categories.FirstOrDefault(x => x.Name == "Antibiotics").Id,
                     ManufacturerId = context.Manufacturers.FirstOrDefault(x => x.Name == "Ranbaxy Pharmaceuticals Inc.").Id,
                 });
@@ -583,8 +545,6 @@ namespace PharmacyWebAPI.Extensions
                     Description = "Rosuvastatin is a statin used to lower cholesterol levels and prevent heart disease.",
                     PregnancyCategory = PregnancyCategory.X,
                     ImgURL = "https://www.drugs.com/images/pills/teva/0093-7178-01.jpg",
-                    ManufacturerName = "Teva Pharmaceuticals USA",
-                    CategoryName = "Cardiovascular Health",
                     CategoryId = context.Categories.FirstOrDefault(x => x.Name == "Cardiovascular Health").Id,
                     ManufacturerId = context.Manufacturers.FirstOrDefault(x => x.Name == "Teva Pharmaceuticals USA").Id,
                 });
@@ -598,8 +558,6 @@ namespace PharmacyWebAPI.Extensions
                     Description = "Levothyroxine is a thyroid hormone replacement used to treat hypothyroidism and prevent goiter.",
                     PregnancyCategory = PregnancyCategory.A,
                     ImgURL = "https://www.drugs.com/images/pills/actavis/L-20.jpg",
-                    ManufacturerName = "Actavis Pharma, Inc.",
-                    CategoryName = "Endocrine / Hormone Health",
                     CategoryId = context.Categories.FirstOrDefault(x => x.Name == "Endocrine / Hormone Health").Id,
                     ManufacturerId = context.Manufacturers.FirstOrDefault(x => x.Name == "Actavis Pharma, Inc.").Id,
                 });
@@ -613,8 +571,6 @@ namespace PharmacyWebAPI.Extensions
                     Description = "Ibuprofen is a nonsteroidal anti-inflammatory drug (NSAID) used to treat pain and fever.",
                     PregnancyCategory = PregnancyCategory.C,
                     ImgURL = "https://www.drugs.com/images/pills/mr/MR-23-1.jpg",
-                    ManufacturerName = "Mallinckrodt Pharmaceuticals",
-                    CategoryName = "Pain Relief",
                     CategoryId = context.Categories.FirstOrDefault(x => x.Name == "Pain Relief").Id,
                     ManufacturerId = context.Manufacturers.FirstOrDefault(x => x.Name == "Mallinckrodt Pharmaceuticals").Id,
                 });
@@ -628,8 +584,6 @@ namespace PharmacyWebAPI.Extensions
                     Description = "Losartan is an angiotensin II receptor blocker (ARB) used to treat high blood pressure and protect kidneys from damage in diabetic patients.",
                     PregnancyCategory = PregnancyCategory.D,
                     ImgURL = "https://www.drugs.com/images/pills/rx/rx724-1.jpg",
-                    ManufacturerName = "Alembic Pharmaceuticals Limited",
-                    CategoryName = "Cardiovascular Health",
                     CategoryId = context.Categories.FirstOrDefault(x => x.Name == "Cardiovascular Health").Id,
                     ManufacturerId = context.Manufacturers.FirstOrDefault(x => x.Name == "Alembic Pharmaceuticals Limited").Id,
                 });
@@ -643,8 +597,6 @@ namespace PharmacyWebAPI.Extensions
                     Description = "Alprazolam is a benzodiazepine used to treat anxiety and panic disorders.",
                     PregnancyCategory = PregnancyCategory.D,
                     ImgURL = "https://www.drugs.com/images/pills/rx/rx869-1.jpg",
-                    ManufacturerName = "Greenstone LLC",
-                    CategoryName = "Mental Health",
                     CategoryId = context.Categories.FirstOrDefault(x => x.Name == "Mental Health").Id,
                     ManufacturerId = context.Manufacturers.FirstOrDefault(x => x.Name == "Greenstone LLC").Id,
                 });
@@ -658,8 +610,6 @@ namespace PharmacyWebAPI.Extensions
                     Description = "Doxycycline is a tetracycline antibiotic used to treat bacterial infections.",
                     PregnancyCategory = PregnancyCategory.D,
                     ImgURL = "https://www.drugs.com/images/pills/bm/100-2.jpg",
-                    ManufacturerName = "Bristol-Myers Squibb",
-                    CategoryName = "Antibiotics",
                     CategoryId = context.Categories.FirstOrDefault(x => x.Name == "Antibiotics").Id,
                     ManufacturerId = context.Manufacturers.FirstOrDefault(x => x.Name == "Bristol-Myers Squibb").Id,
                 });
@@ -673,8 +623,6 @@ namespace PharmacyWebAPI.Extensions
                     Description = "Metformin is an oral diabetes medicine used to control blood sugar levels.",
                     PregnancyCategory = PregnancyCategory.B,
                     ImgURL = "https://www.drugs.com/images/pills/actavis/142-1.jpg",
-                    ManufacturerName = "Actavis Pharma, Inc.",
-                    CategoryName = "Endocrine / Hormone Health",
                     CategoryId = context.Categories.FirstOrDefault(x => x.Name == "Endocrine / Hormone Health").Id,
                     ManufacturerId = context.Manufacturers.FirstOrDefault(x => x.Name == "Actavis Pharma, Inc.").Id,
                 });
@@ -688,8 +636,6 @@ namespace PharmacyWebAPI.Extensions
                     Description = "Fluoxetine is a selective serotonin reuptake inhibitor (SSRI) used to treat depression, anxiety, and obsessive-compulsive disorder.",
                     PregnancyCategory = PregnancyCategory.C,
                     ImgURL = "https://www.drugs.com/images/pills/rx/rx710-1.jpg",
-                    ManufacturerName = "Ranbaxy Pharmaceuticals Inc.",
-                    CategoryName = "Mental Health",
                     CategoryId = context.Categories.FirstOrDefault(x => x.Name == "Mental Health").Id,
                     ManufacturerId = context.Manufacturers.FirstOrDefault(x => x.Name == "Ranbaxy Pharmaceuticals Inc.").Id,
                 });
@@ -703,8 +649,6 @@ namespace PharmacyWebAPI.Extensions
                     Description = "Omeprazole is a proton pump inhibitor (PPI) used to treat heartburn and acid reflux.",
                     PregnancyCategory = PregnancyCategory.C,
                     ImgURL = "https://www.drugs.com/images/pills/teva/TEVA-7635-20mg.jpg",
-                    ManufacturerName = "Teva Pharmaceuticals USA",
-                    CategoryName = "Digestive Health",
                     CategoryId = context.Categories.FirstOrDefault(x => x.Name == "Digestive Health").Id,
                     ManufacturerId = context.Manufacturers.FirstOrDefault(x => x.Name == "Teva Pharmaceuticals USA").Id,
                 });
@@ -718,8 +662,6 @@ namespace PharmacyWebAPI.Extensions
                     Description = "Tramadol is a narcotic-like pain reliever used to treat moderate to severe pain.",
                     PregnancyCategory = PregnancyCategory.C,
                     ImgURL = "https://www.drugs.com/images/pills/rx/rx652-1.jpg",
-                    ManufacturerName = "Ranbaxy Pharmaceuticals Inc.",
-                    CategoryName = "Pain Relief",
                     CategoryId = context.Categories.FirstOrDefault(x => x.Name == "Pain Relief").Id,
                     ManufacturerId = context.Manufacturers.FirstOrDefault(x => x.Name == "Ranbaxy Pharmaceuticals Inc.").Id,
                 });
@@ -733,8 +675,6 @@ namespace PharmacyWebAPI.Extensions
                     Description = "Lisinopril is an angiotensin-converting enzyme (ACE) inhibitor used to treat high blood pressure and heart failure.",
                     PregnancyCategory = PregnancyCategory.D,
                     ImgURL = "https://www.drugs.com/images/pills/abg/ABG-10-1.jpg",
-                    ManufacturerName = "Actavis Pharma, Inc.",
-                    CategoryName = "Cardiovascular Health",
                     CategoryId = context.Categories.FirstOrDefault(x => x.Name == "Cardiovascular Health").Id,
                     ManufacturerId = context.Manufacturers.FirstOrDefault(x => x.Name == "Actavis Pharma, Inc.").Id,
                 });
@@ -748,8 +688,6 @@ namespace PharmacyWebAPI.Extensions
                     Description = "Cetirizine is an antihistamine used to treat allergies and hives.",
                     PregnancyCategory = PregnancyCategory.B,
                     ImgURL = "https://www.drugs.com/images/pills/actavis/003-2.jpg",
-                    ManufacturerName = "Actavis Pharma, Inc.",
-                    CategoryName = "Allergy / Sinus Health",
                     CategoryId = context.Categories.FirstOrDefault(x => x.Name == "Allergy / Sinus Health").Id,
                     ManufacturerId = context.Manufacturers.FirstOrDefault(x => x.Name == "Actavis Pharma, Inc.").Id,
                 });
@@ -763,8 +701,6 @@ namespace PharmacyWebAPI.Extensions
                     Description = "Morphine is a narcotic pain reliever used to treat severe pain.",
                     PregnancyCategory = PregnancyCategory.C,
                     ImgURL = "https://www.drugs.com/images/pills/abg/ABG-15-1.jpg",
-                    ManufacturerName = "Actavis Pharma, Inc.",
-                    CategoryName = "Pain Relief",
                     CategoryId = context.Categories.FirstOrDefault(x => x.Name == "Pain Relief").Id,
                     ManufacturerId = context.Manufacturers.FirstOrDefault(x => x.Name == "Actavis Pharma, Inc.").Id,
                 });
@@ -778,8 +714,6 @@ namespace PharmacyWebAPI.Extensions
                     Description = "Metoprolol is a beta blocker used to treat high blood pressure and prevent heart attacks.",
                     PregnancyCategory = PregnancyCategory.C,
                     ImgURL = "https://www.drugs.com/images/pills/rx/rx162-1.jpg",
-                    ManufacturerName = "Ranbaxy Pharmaceuticals Inc.",
-                    CategoryName = "Cardiovascular Health",
                     CategoryId = context.Categories.FirstOrDefault(x => x.Name == "Cardiovascular Health").Id,
                     ManufacturerId = context.Manufacturers.FirstOrDefault(x => x.Name == "Ranbaxy Pharmaceuticals Inc.").Id,
                 });
@@ -793,8 +727,6 @@ namespace PharmacyWebAPI.Extensions
                     Description = "Ciprofloxacin is a fluoroquinolone antibiotic used to treat bacterial infections.",
                     PregnancyCategory = PregnancyCategory.C,
                     ImgURL = "https://www.drugs.com/images/pills/rx/rx710-1.jpg",
-                    ManufacturerName = "Ranbaxy Pharmaceuticals Inc.",
-                    CategoryName = "Antibiotics",
                     CategoryId = context.Categories.FirstOrDefault(x => x.Name == "Antibiotics").Id,
                     ManufacturerId = context.Manufacturers.FirstOrDefault(x => x.Name == "Ranbaxy Pharmaceuticals Inc.").Id,
                 });
@@ -808,8 +740,6 @@ namespace PharmacyWebAPI.Extensions
                     Description = "Furosemide is a loop diuretic used to treat fluid retention and high blood pressure.",
                     PregnancyCategory = PregnancyCategory.C,
                     ImgURL = "https://www.drugs.com/images/pills/wpi/WPI-39-10.jpg",
-                    ManufacturerName = "Watson Pharmaceuticals, Inc.",
-                    CategoryName = "Cardiovascular Health",
                     CategoryId = context.Categories.FirstOrDefault(x => x.Name == "Cardiovascular Health").Id,
                     ManufacturerId = context.Manufacturers.FirstOrDefault(x => x.Name == "Watson Pharmaceuticals, Inc.").Id,
                 });
@@ -823,8 +753,6 @@ namespace PharmacyWebAPI.Extensions
                     Description = "Atorvastatin is a statin used to lower cholesterol levels and prevent heart disease.",
                     PregnancyCategory = PregnancyCategory.X,
                     ImgURL = "https://www.drugs.com/images/pills/rx/rx828-1.jpg",
-                    ManufacturerName = "Ranbaxy Pharmaceuticals Inc.",
-                    CategoryName = "Cardiovascular Health",
                     CategoryId = context.Categories.FirstOrDefault(x => x.Name == "Cardiovascular Health").Id,
                     ManufacturerId = context.Manufacturers.FirstOrDefault(x => x.Name == "Ranbaxy Pharmaceuticals Inc.").Id,
                 });
@@ -838,8 +766,6 @@ namespace PharmacyWebAPI.Extensions
                     Description = "Sertraline is a selective serotonin reuptake inhibitor (SSRI) used to treat depression, anxiety, and obsessive-compulsive disorder.",
                     PregnancyCategory = PregnancyCategory.C,
                     ImgURL = "https://www.drugs.com/images/pills/abg/ABG-50-1.jpg",
-                    ManufacturerName = "Actavis Pharma, Inc.",
-                    CategoryName = "Mental Health",
                     CategoryId = context.Categories.FirstOrDefault(x => x.Name == "Mental Health").Id,
                     ManufacturerId = context.Manufacturers.FirstOrDefault(x => x.Name == "Actavis Pharma, Inc.").Id,
                 });
@@ -853,8 +779,6 @@ namespace PharmacyWebAPI.Extensions
                     Description = "Lorazepam is a benzodiazepine used to treat anxiety and insomnia.",
                     PregnancyCategory = PregnancyCategory.D,
                     ImgURL = "https://www.drugs.com/images/pills/rx/rx773-1.jpg",
-                    ManufacturerName = "Ranbaxy Pharmaceuticals Inc.",
-                    CategoryName = "Mental Health",
                     CategoryId = context.Categories.FirstOrDefault(x => x.Name == "Mental Health").Id,
                     ManufacturerId = context.Manufacturers.FirstOrDefault(x => x.Name == "Ranbaxy Pharmaceuticals Inc.").Id,
                 });
@@ -868,8 +792,6 @@ namespace PharmacyWebAPI.Extensions
                     Description = "Levothyroxine is a thyroid hormone used to treat hypothyroidism and goiter.",
                     PregnancyCategory = PregnancyCategory.A,
                     ImgURL = "https://www.drugs.com/images/pills/rx/rx679-1.jpg",
-                    ManufacturerName = "Ranbaxy Pharmaceuticals Inc.",
-                    CategoryName = "Endocrine / Hormone Health",
                     CategoryId = context.Categories.FirstOrDefault(x => x.Name == "Endocrine / Hormone Health").Id,
                     ManufacturerId = context.Manufacturers.FirstOrDefault(x => x.Name == "Ranbaxy Pharmaceuticals Inc.").Id,
                 });
@@ -883,8 +805,6 @@ namespace PharmacyWebAPI.Extensions
                     Description = "Ibuprofen is a nonsteroidal anti-inflammatory drug (NSAID) used to treat pain and inflammation.",
                     PregnancyCategory = PregnancyCategory.C,
                     ImgURL = "https://www.drugs.com/images/pills/rx/rx704-1.jpg",
-                    ManufacturerName = "Ranbaxy Pharmaceuticals Inc.",
-                    CategoryName = "Pain Relief",
                     CategoryId = context.Categories.FirstOrDefault(x => x.Name == "Pain Relief").Id,
                     ManufacturerId = context.Manufacturers.FirstOrDefault(x => x.Name == "Ranbaxy Pharmaceuticals Inc.").Id,
                 });
@@ -898,8 +818,6 @@ namespace PharmacyWebAPI.Extensions
                     Description = "Propranolol is a beta blocker used to treat high blood pressure, heart rhythm disorders, and anxiety.",
                     PregnancyCategory = PregnancyCategory.C,
                     ImgURL = "https://www.drugs.com/images/pills/abg/ABG-40-1.jpg",
-                    ManufacturerName = "Actavis Pharma, Inc.",
-                    CategoryName = "Cardiovascular Health",
                     CategoryId = context.Categories.FirstOrDefault(x => x.Name == "Cardiovascular Health").Id,
                     ManufacturerId = context.Manufacturers.FirstOrDefault(x => x.Name == "Actavis Pharma, Inc.").Id,
                 });
@@ -913,8 +831,6 @@ namespace PharmacyWebAPI.Extensions
                     Description = "Azithromycin is a macrolide antibiotic used to treat bacterial infections.",
                     PregnancyCategory = PregnancyCategory.B,
                     ImgURL = "https://www.drugs.com/images/pills/rx/rx710-1.jpg",
-                    ManufacturerName = "Ranbaxy Pharmaceuticals Inc.",
-                    CategoryName = "Antibiotics",
                     CategoryId = context.Categories.FirstOrDefault(x => x.Name == "Antibiotics").Id,
                     ManufacturerId = context.Manufacturers.FirstOrDefault(x => x.Name == "Ranbaxy Pharmaceuticals Inc.").Id,
                 });

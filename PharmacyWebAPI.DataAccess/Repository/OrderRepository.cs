@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using AutoMapper;
 using PharmacyWebAPI.Models;
 using PharmacyWebAPI.Models.Dto;
+using Stripe.Checkout;
 
 namespace PharmacyWebAPI.DataAccess.Repository
 {
@@ -28,16 +29,16 @@ namespace PharmacyWebAPI.DataAccess.Repository
             }
         }
 
-        /*    public Order GenerateOrder()
+        public Order GenerateOrder(string userId)
+        {
+            var order = new Order
             {
-                var order = new Order
-                {
-                    UserId = "73a7b2fe-8769-4a55-960c-9370c95c450e",
-                    PaymentStatus = PharmacyWebAPI.Utility.SD.PaymentStatusPending,
-                    OrderStatus = SD.StatusApproved
-                };
-                return order;
-            }*/
+                UserId = userId,
+                PaymentStatus = "Pending",
+                OrderStatus = "Pending"
+            };
+            return order;
+        }
 
         public double GetTotalPrice(List<OrderDetail> Drugs)
         {
@@ -49,72 +50,61 @@ namespace PharmacyWebAPI.DataAccess.Repository
             return totalPrice;
         }
 
-        public void SetOrderId(int OrderId, List<OrderDetail> details)
+        public async Task<Session> StripeSetting(Order order, List<OrderDetail> orderDetails)
         {
-            foreach (var d in details)
-            {
-                d.OrderId = OrderId;
-            }
+            var options = GenerateOptions(order.Id);
+            await SetOptionsValues(options, orderDetails);
+
+            var session = await new SessionService().CreateAsync(options);
+
+            order.SessionId = session.Id;
+            order.PaymentIntentId = session.PaymentIntentId;
+
+            _context.Order.Update(order);
+            await _context.SaveChangesAsync();
+            return session;
         }
 
-        /*
-                public async Task<StatusCodeResult> StripePrepare(Order order, List<OrderDetail> orderDetails)
+        public SessionCreateOptions GenerateOptions(int OrderId)
+        {
+            var domain = "https://localhost:44332";
+            var options = new SessionCreateOptions
+            {
+                PaymentMethodTypes = new List<string> { "card" },
+                LineItems = new List<SessionLineItemOptions>(),
+                Mode = "payment",
+                SuccessUrl = $"{domain}/api/Order/OrderConfirmation?id={OrderId}",
+                CancelUrl = $"{domain}/api/Order/Denied"
+            };
+            return options;
+        }
+
+        public async Task SetOptionsValues(SessionCreateOptions options, List<OrderDetail> orderDetails)
+        {
+            foreach (var item in orderDetails)
+            {
+                var drug = await _context.Drugs.FirstOrDefaultAsync(d => d.Id == item.DrugId);
+                var sessionLineItem = new SessionLineItemOptions
                 {
-                    var options = GenerateOptions(order.Id);
-                    await SetOptionsValues(options, orderDetails);
-
-                    var session = await new SessionService().CreateAsync(options);
-
-                    order.SessionId = session.Id;
-                    order.PaymentIntentId = session.PaymentIntentId;
-
-                    _context.Order.Update(order);
-                    await _context.SaveChangesAsync();
-
-                    Response.Headers.Add("Location", session.Url);
-                    return new StatusCodeResult(303);
-                }
-
-                public SessionCreateOptions GenerateOptions(int OrderId)
-                {
-                    var domain = "https://localhost:44332";
-                    var options = new SessionCreateOptions
+                    PriceData = new SessionLineItemPriceDataOptions
                     {
-                        PaymentMethodTypes = new List<string> { "card" },
-                        LineItems = new List<SessionLineItemOptions>(),
-                        Mode = "payment",
-                        SuccessUrl = $"{domain}/api/Order/OrderConfirmation?id={OrderId}",
-                        CancelUrl = $"{domain}/api/Order/Denied"
-                    };
-                    return options;
-                }
-
-                public async Task SetOptionsValues(SessionCreateOptions options, List<OrderDetail> orderDetails)
-                {
-                    foreach (var item in orderDetails)
-                    {
-                        var product = await _unitOfWork.Drug.GetFirstOrDefaultAsync(p => p.Id == item.DrugId);
-                        var sessionLineItem = new SessionLineItemOptions
+                        UnitAmount = (long)(item.Price * 100), // 20.00 -> 2000
+                        Currency = "usd",
+                        ProductData = new SessionLineItemPriceDataProductDataOptions
                         {
-                            PriceData = new SessionLineItemPriceDataOptions
-                            {
-                                UnitAmount = (long)(item.Price * 100), // 20.00 -> 2000
-                                Currency = "usd",
-                                ProductData = new SessionLineItemPriceDataProductDataOptions
-                                {
-                                    Name = product.Name,
-                                    Images = new List<string> { product.ImgURL },
-                                    Description = product.Description
-                                }
-                            },
-                            Quantity = item.Count
-                        };
-                        options.LineItems.Add(sessionLineItem);
-                        product.Stock -= item.Count;
-                        _unitOfWork.Drug.Update(product);
-                    }
-                }
-        */
+                            Name = drug.Name,
+                            Images = new List<string> { drug.ImgURL },
+                            Description = drug.Description
+                        }
+                    },
+                    Quantity = item.Count
+                };
+                options.LineItems.Add(sessionLineItem);
+                drug.Stock -= item.Count;
+                _context.Drugs.Update(drug);
+                await _context.SaveChangesAsync();
+            }
+        }
 
         public void UpdateStripePaymentID(int id, string paymentItentId)
         {

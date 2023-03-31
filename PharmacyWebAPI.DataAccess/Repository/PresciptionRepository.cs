@@ -1,4 +1,6 @@
-﻿namespace PharmacyWebAPI.DataAccess.Repository
+﻿using PharmacyWebAPI.Models;
+
+namespace PharmacyWebAPI.DataAccess.Repository
 {
     public class PrescriptionRepository : Repository<Prescription>, IPrescriptionRepository
     {
