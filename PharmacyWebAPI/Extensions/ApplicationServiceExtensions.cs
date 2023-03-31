@@ -12,10 +12,8 @@ namespace PharmacyWebAPI.Extensions
             services.Configure<JWT>(config.GetSection("JWT"));
             services.AddScoped<IPhotoService, PhotoService>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
-
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.AddScoped<IUnitOfWork, UnitOfWork>();
-
             services.AddTransient<ISendGridEmail, SendGridEmail>();
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen();
@@ -25,7 +23,7 @@ namespace PharmacyWebAPI.Extensions
 
             services.AddCors(p => p.AddPolicy("corsapp", builder =>
             {
-                builder.WithOrigins("http://ezdrug.somee.com/api")
+                builder.WithOrigins("https://ezdrug.tech/api")
                        .AllowAnyOrigin()
                        .AllowAnyMethod()
                        .AllowAnyHeader();
