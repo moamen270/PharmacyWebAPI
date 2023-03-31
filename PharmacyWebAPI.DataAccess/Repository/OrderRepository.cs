@@ -1,10 +1,8 @@
 ﻿using Azure;
 using Microsoft.AspNetCore.Mvc;
-using Stripe.BillingPortal;
 using AutoMapper;
 using PharmacyWebAPI.Models;
 using PharmacyWebAPI.Models.Dto;
-using Stripe.Checkout;
 
 namespace PharmacyWebAPI.DataAccess.Repository
 {

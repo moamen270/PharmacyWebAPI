@@ -2,7 +2,7 @@
 using PharmacyWebAPI.Models;
 using PharmacyWebAPI.Models.Dto;
 
-namespace PharmacyWebAPI.Utility.Settings
+namespace PharmacyWebAPI.Utility.Setting
 {
     public class AutoMapperProfile : Profile
     {
@@ -24,6 +24,11 @@ namespace PharmacyWebAPI.Utility.Settings
                 .ForMember(dest => dest.Categories, src => src.Ignore())
                 .ForMember(dest => dest.Manufacturers, src => src.Ignore())
                 .ReverseMap();
+
+            CreateMap<Order, OrderDto>()
+                .ReverseMap()
+                .ForMember(dest => dest.SessionId, src => src.Ignore());
+
             CreateMap<OrderDetail, OrderDetailsDto>()
                .ReverseMap()
                .ForMember(dest => dest.Drug, src => src.Ignore())

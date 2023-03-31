@@ -1,8 +1,7 @@
 ﻿using PharmacyWebAPI.DataAccess.Repository;
-using PharmacyWebAPI.Utility;
 using PharmacyWebAPI.Utility.Services;
 using PharmacyWebAPI.Utility.Services.IServices;
-using PharmacyWebAPI.Utility.Setting;
+using PharmacyWebAPI.Utility.Settings;
 
 namespace PharmacyWebAPI.Extensions
 {

@@ -1,4 +1,4 @@
-﻿namespace PharmacyWebAPI.Models.ViewModels
+﻿namespace PharmacyWebAPI.Models.Dto
 {
     public class ForgotPasswordDto
     {

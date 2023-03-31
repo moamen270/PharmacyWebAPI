@@ -64,7 +64,7 @@ namespace PharmacyWebAPI.Controllers
             {
                 PatientId = patientId,
             });
-            await _unitOfWork.SaveAsynce();
+            await _unitOfWork.SaveAsync();
             return Ok(new { success = true, message = "Product Created Successfully" });
         }
 
@@ -89,7 +89,7 @@ namespace PharmacyWebAPI.Controllers
             }
             viewModel.DoctorId = (await _userManager.GetUserAsync(User)).Id;
             await _unitOfWork.Prescription.AddAsync(_mapper.Map<Prescription>(viewModel));
-            await _unitOfWork.SaveAsynce();
+            await _unitOfWork.SaveAsync();
             return Ok(new { success = true, message = "Prescription Created Successfully", viewModel });
         }
 
@@ -102,7 +102,7 @@ namespace PharmacyWebAPI.Controllers
                 return BadRequest(new { success = false, message = "Error While Deleting" });
 
             _unitOfWork.Prescription.Delete(obj);
-            await _unitOfWork.SaveAsynce();
+            await _unitOfWork.SaveAsync();
 
             return Ok(new { success = true, message = "Prescription Deleted Successfully" });
         }
@@ -118,7 +118,7 @@ namespace PharmacyWebAPI.Controllers
             }
 
             _unitOfWork.Prescription.Update(_mapper.Map<Prescription>(obj));
-            await _unitOfWork.SaveAsynce();
+            await _unitOfWork.SaveAsync();
             return Ok(obj);
         }
 

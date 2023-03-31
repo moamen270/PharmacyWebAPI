@@ -31,7 +31,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\PharmacyWebAPI.DataAccess\PharmacyWebAPI.DataAccess.csproj" />
-		<ProjectReference Include="..\PharmacyWebAPI.Helper\PharmacyWebAPI.Helper.csproj" />
+		<ProjectReference Include="..\PharmacyWebAPI.Utility\PharmacyWebAPI.Utility.csproj" />
 		<ProjectReference Include="..\PharmacyWebAPI.Models\PharmacyWebAPI.Models.csproj" />
 	</ItemGroup>
 

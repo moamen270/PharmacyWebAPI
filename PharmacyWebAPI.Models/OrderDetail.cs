@@ -9,10 +9,10 @@
 
         public Order Order { get; set; }
 
-        [ForeignKey("Product")]
-        public int ProductId { get; set; }
+        [ForeignKey("Drug")]
+        public int DrugId { get; set; }
 
-        public Product Product { get; set; }
+        public Drug Drug { get; set; }
         public int Count { get; set; }
         public double Price { get; set; }
     }

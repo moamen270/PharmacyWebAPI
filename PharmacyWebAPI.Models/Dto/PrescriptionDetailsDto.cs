@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using System.ComponentModel.DataAnnotations;
 
-namespace PharmacyWebAPI.Models.ViewModels
+namespace PharmacyWebAPI.Models.Dto
 {
     public class PrescriptionDetailsDto
     {
@@ -15,9 +15,9 @@ namespace PharmacyWebAPI.Models.ViewModels
         [ValidateNever]
         public Prescription Prescription { get; set; }
 
-        public int ProductId { get; set; }
+        public int DrugId { get; set; }
 
         [ValidateNever]
-        public Product Product { get; set; }
+        public Drug Drug { get; set; }
     }
 }
