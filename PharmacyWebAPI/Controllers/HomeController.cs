@@ -2,7 +2,9 @@
 global using Microsoft.AspNetCore.Mvc;
 global using PharmacyWebAPI.DataAccess.Repository.IRepository;
 global using PharmacyWebAPI.Models;
+using AutoMapper;
 using Microsoft.DotNet.Scaffolding.Shared.Messaging;
+using NuGet.Protocol;
 using System.Text;
 
 namespace PharmacyWebAPI.Controllers
@@ -14,9 +16,34 @@ namespace PharmacyWebAPI.Controllers
         [HttpGet]
         public IActionResult Index()
         {
+            /*using var client = new HttpClient();*/
+
+            /*            var result = await client.GetStringAsync("https://localhost:44332/api/category/getall");
+            */
             var result = Drow("EzDrug APIS");
             return Ok(result);
         }
+
+        /*
+         * using System.Text;
+        using Newtonsoft.Json;
+
+        var person = new Person("John Doe", "gardener");
+
+        var json = JsonConvert.SerializeObject(person);
+        var data = new StringContent(json, Encoding.UTF8, "application/json");
+
+        var url = "https://httpbin.org/post";
+        using var client = new HttpClient();
+
+        var response = await client.PostAsync(url, data);
+
+        var result = await response.Content.ReadAsStringAsync();
+        Console.WriteLine(result);
+
+        record Person(string Name, string Occupation);
+
+         */
 
         private static string Drow(string text)
         {
