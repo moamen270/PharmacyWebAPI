@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using PharmacyWebAPI.Models.ViewModels;
+using PharmacyWebAPI.Models.Dto;
 
 namespace PharmacyWebAPI.Controllers
 {
@@ -16,7 +14,7 @@ namespace PharmacyWebAPI.Controllers
         public RolesController(RoleManager<IdentityRole> roleManager)
         {
             _roleManager = roleManager;
-        }       
+        }
 
         [HttpGet]
         public async Task<IActionResult> GetAll()

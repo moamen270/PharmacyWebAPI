@@ -1,15 +1,8 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using PharmacyWebAPI.Utility.Services.IServices;
-using PharmacyWebAPI.Utility.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using PharmacyWebAPI.DataAccess.Repository.IRepository;
-using PharmacyWebAPI.DataAccess.Repository;
+﻿using PharmacyWebAPI.DataAccess.Repository;
 using PharmacyWebAPI.Utility;
+using PharmacyWebAPI.Utility.Services;
+using PharmacyWebAPI.Utility.Services.IServices;
+using PharmacyWebAPI.Utility.Setting;
 
 namespace PharmacyWebAPI.Extensions
 {
@@ -17,10 +10,13 @@ namespace PharmacyWebAPI.Extensions
     {
         public static IServiceCollection AddApplicationServices(this IServiceCollection services, IConfiguration config)
         {
+            services.Configure<JWT>(config.GetSection("JWT"));
             services.AddScoped<IPhotoService, PhotoService>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+
             services.AddTransient<ISendGridEmail, SendGridEmail>();
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen();
@@ -30,7 +26,10 @@ namespace PharmacyWebAPI.Extensions
 
             services.AddCors(p => p.AddPolicy("corsapp", builder =>
             {
-                builder.WithOrigins("http://ezdrug.somee.com/api").AllowAnyMethod().AllowAnyHeader().AllowAnyOrigin();
+                builder.WithOrigins("http://ezdrug.somee.com/api")
+                       .AllowAnyOrigin()
+                       .AllowAnyMethod()
+                       .AllowAnyHeader();
             }));
 
             return services;

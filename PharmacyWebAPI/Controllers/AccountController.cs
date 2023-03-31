@@ -1,5 +1,5 @@
 using AutoMapper;
-using PharmacyWebAPI.Models.ViewModels;
+using PharmacyWebAPI.Models.Dto;
 using PharmacyWebAPI.Utility.Services.IServices;
 
 namespace PharmacyWebAPI.Controllers
@@ -8,18 +8,13 @@ namespace PharmacyWebAPI.Controllers
     [Route("api/[controller]")]
     public class AccountController : ControllerBase
     {
-        private readonly IUnitOfWork _unitOfWork;
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
-        private readonly IMapper _mapper;
         private readonly ISendGridEmail _sendGridEmail;
 
-        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager,
-                                IUnitOfWork unitOfWork, IMapper mapper, ISendGridEmail sendGridEmail)
+        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager, ISendGridEmail sendGridEmail)
         {
-            _unitOfWork = unitOfWork;
             _userManager = userManager;
-            _mapper = mapper;
             _sendGridEmail = sendGridEmail;
             _signInManager = signInManager;
         }
@@ -29,7 +24,7 @@ namespace PharmacyWebAPI.Controllers
         public IActionResult GetRegister()
         {
             RegisterDto user = new RegisterDto();
-            return Ok(user);
+            return Ok(new { User = user });
         }
 
         [HttpPost]
@@ -47,10 +42,10 @@ namespace PharmacyWebAPI.Controllers
                 if (result.Succeeded)
                 {
                     await _signInManager.SignInAsync(user, isPersistent: false);
-                    return Ok(userDto);
+                    return Ok(new { success = true, message = "User Registered Successfully  ", User = userDto });
                 }
             }
-            return BadRequest(userDto);
+            return BadRequest(new { success = false, message = " Registered Faild  ", User = userDto });
         }
 
         [HttpGet]
@@ -58,7 +53,7 @@ namespace PharmacyWebAPI.Controllers
         public IActionResult GetLogin()
         {
             LoginDto user = new LoginDto();
-            return Ok(user);
+            return Ok(new { User = user });
         }
 
         [HttpPost]
@@ -69,11 +64,11 @@ namespace PharmacyWebAPI.Controllers
             {
                 var result = await _signInManager.PasswordSignInAsync(userDto.Email, userDto.Password, true, false);
                 if (result.Succeeded)
-                    return Ok(userDto);
+                    return Ok(new { success = true, message = "User Login Successfully  ", User = userDto });
                 if (result.IsLockedOut)
                     return BadRequest("Account Locked Out");
             }
-            return BadRequest(userDto);
+            return BadRequest(new { success = false, message = " Login Faild  ", User = userDto });
         }
 
         [HttpPost]
@@ -88,7 +83,7 @@ namespace PharmacyWebAPI.Controllers
         [Route("ForgotPassword")]
         public IActionResult ForgotPassword()
         {
-            return Ok(new ForgotPasswordDto());
+            return Ok(new { ForgotPassword = new ForgotPasswordDto() });
         }
 
         [HttpPost]
@@ -100,7 +95,7 @@ namespace PharmacyWebAPI.Controllers
                 var user = await _userManager.FindByEmailAsync(model.Email);
                 if (user is null)
                 {
-                    return BadRequest("User Not Found");
+                    return NotFound(new { success = false, message = "NotFound" });
                 }
                 var code = await _userManager.GeneratePasswordResetTokenAsync(user);
                 var callbackurl = Url.Action("ResetPassword", "Account", values: new { userId = user.Id, code = code }, protocol: Request.Scheme);

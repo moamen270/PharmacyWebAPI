@@ -1,9 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using PharmacyWebAPI.DataAccess.Repository.IRepository;
-using PharmacyWebAPI.Models;
-using System.Diagnostics;
-
-namespace PharmacyWebAPI.Controllers
+﻿namespace PharmacyWebAPI.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
@@ -46,8 +41,12 @@ namespace PharmacyWebAPI.Controllers
         [Route("Create")]
         public async Task<IActionResult> Create(Category model)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new { State = ModelState, Category = model });
+            }
             await _unitOfWork.Category.AddAsync(model);
-            _unitOfWork.Save();
+            await _unitOfWork.SaveAsynce();
 
             return Ok(new { success = true, message = "Category Created Successfully", Category = model });
         }
@@ -58,10 +57,10 @@ namespace PharmacyWebAPI.Controllers
         {
             var Category = await _unitOfWork.Category.GetAsync(id);
             if (Category == null)
-                return BadRequest(new { success = false, message = "Error While Deleting" });
+                return NotFound(new { success = false, message = "NotFound" });
 
             _unitOfWork.Category.Delete(Category);
-            _unitOfWork.Save();
+            await _unitOfWork.SaveAsynce();
 
             return Ok(new { success = true, message = "Category Deleted Successfully" });
         }
@@ -69,15 +68,15 @@ namespace PharmacyWebAPI.Controllers
         //POST
         [HttpPost]
         [Route("Edit")]
-        public IActionResult Edit(Category obj)
+        public async Task<IActionResult> Edit(Category obj)
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(new { success = false, message = "Error While Editing", Category = obj });
+                return BadRequest(new { State = ModelState, Category = obj });
             }
 
             _unitOfWork.Category.Update(obj);
-            _unitOfWork.Save();
+            await _unitOfWork.SaveAsynce();
             return Ok(new { success = true, message = "Category Updated Successfully", Category = obj });
         }
     }

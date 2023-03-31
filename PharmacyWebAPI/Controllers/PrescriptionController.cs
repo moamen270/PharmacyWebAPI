@@ -1,10 +1,5 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using PharmacyWebAPI.DataAccess.Repository.IRepository;
-using PharmacyWebAPI.Models;
-using PharmacyWebAPI.Models.ViewModels;
-using System.Diagnostics;
+using PharmacyWebAPI.Models.Dto;
 
 namespace PharmacyWebAPI.Controllers
 {
@@ -22,44 +17,54 @@ namespace PharmacyWebAPI.Controllers
             _userManager = userManager;
             _mapper = mapper;
         }
+
         [HttpGet]
         [Route("Get")]
         public async Task<IActionResult> Get(int id)
         {
-            var obj = await  _unitOfWork.Prescription.GetAsync(id);
-            if(obj is null)
-            return BadRequest("Not Found");
+            var obj = await _unitOfWork.Prescription.GetFirstOrDefaultAsync(p => p.Id == id);
+            if (obj is null)
+                return BadRequest("Not Found");
             return Ok(obj);
         }
 
-
         [HttpGet]
         [Route("GetAll")]
-        public async Task<IActionResult> GetAll(int id)
+        public async Task<IActionResult> GetAll()
         {
-            /*&& x.DoctorId == (await _userManager.GetUserAsync(User)).Id*/
-            var docId = (await _userManager.GetUserAsync(User)).Id;
-            IEnumerable<Prescription> obj = await _unitOfWork.Prescription.GetAllAsync(d => d.DoctorId == docId, x => x.Patient);
+            var user = (await _userManager.GetUserAsync(User));
+            if (user == null)
+                return Unauthorized();
+            IEnumerable<Prescription> obj = await _unitOfWork.Prescription.GetAllAsync(d => d.DoctorId == user.Id, x => x.Patient);
             return Ok(obj);
         }
 
         [HttpGet]
         [Route("QuickCreate")]
-        public IActionResult QuickCreate()
+        public async Task<IActionResult> QuickCreate()
         {
-            return Ok(new Prescription());
+            var user = (await _userManager.GetUserAsync(User));
+            if (user == null)
+                return Unauthorized();
+            var prescription = new Prescription
+            {
+                DoctorId = user.Id,
+            };
+            return Ok(new { Prescription = prescription });
         }
 
         [HttpPost]
         [Route("QuickCreate")]
-        public async Task<IActionResult> QuickCreate(string CustId)
+        public async Task<IActionResult> QuickCreate(string patientId)
         {
+            await _unitOfWork.User.GetFirstOrDefaultAsync(p => p.Id == patientId);
+            if (User == null)
+                return NotFound();
             await _unitOfWork.Prescription.AddAsync(new Prescription
             {
-                DoctorId = (await _userManager.GetUserAsync(User)).Id,
-                PatientId = CustId,
+                PatientId = patientId,
             });
-            _unitOfWork.Save();
+            await _unitOfWork.SaveAsynce();
             return Ok(new { success = true, message = "Product Created Successfully" });
         }
 
@@ -84,7 +89,7 @@ namespace PharmacyWebAPI.Controllers
             }
             viewModel.DoctorId = (await _userManager.GetUserAsync(User)).Id;
             await _unitOfWork.Prescription.AddAsync(_mapper.Map<Prescription>(viewModel));
-            _unitOfWork.Save();
+            await _unitOfWork.SaveAsynce();
             return Ok(new { success = true, message = "Prescription Created Successfully", viewModel });
         }
 
@@ -97,7 +102,7 @@ namespace PharmacyWebAPI.Controllers
                 return BadRequest(new { success = false, message = "Error While Deleting" });
 
             _unitOfWork.Prescription.Delete(obj);
-            _unitOfWork.Save();
+            await _unitOfWork.SaveAsynce();
 
             return Ok(new { success = true, message = "Prescription Deleted Successfully" });
         }
@@ -105,7 +110,7 @@ namespace PharmacyWebAPI.Controllers
         //POST
         [HttpPost]
         [Route("Edit")]
-        public IActionResult Edit(PrescriptionDto obj)
+        public async Task<IActionResult> Edit(PrescriptionDto obj)
         {
             if (!ModelState.IsValid)
             {
@@ -113,8 +118,27 @@ namespace PharmacyWebAPI.Controllers
             }
 
             _unitOfWork.Prescription.Update(_mapper.Map<Prescription>(obj));
-            _unitOfWork.Save();
+            await _unitOfWork.SaveAsynce();
             return Ok(obj);
         }
+
+        [HttpPost]
+        [Route("Dispens")]
+        public async Task<IActionResult> Dispens(Prescription prescription)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(new { State = ModelState, Prescription = prescription });
+
+            return Ok(new { success = true, });
+        }
+
+        /*    private async Task<Order> ConvertPrescriptionToOrder(Prescription prescription)
+            {
+                var prescriptionDetails = await _unitOfWork.PrescriptionDetails.GetAllFilterAsync(p => p.PrescriptionId == prescription.Id);
+            }
+
+            private Task<Order> ConvertPrescriptionDetailsToOrderDetails(Order order, List<PrescriptionDetails> prescriptionDetails)
+            {
+            }*/
     }
 }

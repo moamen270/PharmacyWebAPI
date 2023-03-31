@@ -1,13 +1,8 @@
+global using PharmacyWebAPI.Utility;
 using Microsoft.EntityFrameworkCore;
 using PharmacyWebAPI.DataAccess;
-using PharmacyWebAPI.DataAccess.Repository.IRepository;
-using PharmacyWebAPI.DataAccess.Repository;
-using Microsoft.AspNetCore.Identity;
-using PharmacyWebAPI.Utility;
-using e_Tickets.Data;
-using PharmacyWebAPI.Utility.Services.IServices;
-using PharmacyWebAPI.Utility.Services;
 using PharmacyWebAPI.Extensions;
+using Stripe;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,12 +17,12 @@ builder.Services.AddControllers();
 
 var app = builder.Build();
 
-app.UseCors(x => x
-                    .AllowAnyMethod()
-                    .AllowAnyHeader()
-                    .SetIsOriginAllowed(origin => true) // allow any origin
-                    .AllowCredentials()); // allow credentials
-
+/*app.UseCors(x => x.AllowAnyMethod()
+                  .AllowAnyHeader()
+                  .SetIsOriginAllowed(origin => true) // allow any origin
+                  .AllowCredentials()); // allow credentials
+*/
+app.UseCors("corsapp");
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -36,6 +31,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+StripeConfiguration.ApiKey = builder.Configuration.GetSection("Stripe:SecretKey").Get<string>();
 
 app.UseAuthorization();
 
@@ -44,4 +40,5 @@ app.MapControllerRoute(
     name: "default",
     pattern: "api/{controller=Home}/{action=Index}");
 await ApplicationDbInitializer.Seed(app);
+
 app.Run();
