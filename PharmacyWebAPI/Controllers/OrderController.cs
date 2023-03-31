@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using PharmacyWebAPI.Models.Dto;
+using Stripe;
 using Stripe.Checkout;
 
 namespace PharmacyWebAPI.Controllers
@@ -56,163 +57,110 @@ namespace PharmacyWebAPI.Controllers
             return Ok(new { Order = new OrderDto() });
         }
 
-        /* [HttpPost]
-         [Route("Checkout")]
-         public async Task<IActionResult> Checkout(IEnumerable<OrderDetailsDto> Products)
+        [HttpPost]
+        [Route("Checkout")]
+        public async Task<IActionResult> Checkout(IEnumerable<OrderDetailsDto> Drugs)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new { State = ModelState, OrderDetails = Drugs });
+            }
+            var user = await _userManager.GetUserAsync(User);
+            /*if (user == null)
+            {
+                return Unauthorized();
+            }*/
+
+            var orderDetails = _mapper.Map<IEnumerable<OrderDetail>>(Drugs).ToList();
+            var order = _unitOfWork.Order.GenerateOrder(user.Id);
+            order.OrderTotal = _unitOfWork.Order.GetTotalPrice(orderDetails);
+            await _unitOfWork.OrderDetail.SetOrderId(order.Id, orderDetails);
+            await _unitOfWork.OrderDetail.AddRangeAsync(orderDetails);
+
+            var session = await _unitOfWork.Order.StripeSetting(order, orderDetails);
+            Response.Headers.Add("Location", session.Url);
+            return new StatusCodeResult(303);
+        }
+
+        /* [HttpPost("Checkout")]
+         public async Task<IActionResult> Checkout(IEnumerable<OrderDetailsDto> products)
          {
              if (!ModelState.IsValid)
              {
-                 return BadRequest(Products);
+                 return BadRequest(products);
              }
-             var products = Products.ToList();
 
-             Order order = new Order();
-             order.UserId = (await _userManager.GetUserAsync(User)).Id;
-             order.PaymentStatus = SD.PaymentStatusPending;
-             order.OrderStatus = SD.StatusApproved;
+             var user = await _userManager.GetUserAsync(User);
+             if (user == null)
+             {
+                 return Unauthorized();
+             }
 
-             await _unitOfWork.Order.AddAsync(order);
-             _unitOfWork.Save();
+             var order = new Order
+             {
+                 UserId = user.Id,
+                 PaymentStatus = SD.PaymentStatusPending,
+                 OrderStatus = SD.StatusApproved
+             };
 
-             List<OrderDetail> orderDetails = new();
+             var orderDetails = new List<OrderDetail>();
              double totalPrice = 0;
+
              foreach (var product in products)
              {
-                 OrderDetail detail = _mapper.Map<OrderDetail>(product);
+                 var detail = _mapper.Map<OrderDetail>(product);
                  detail.OrderId = order.Id;
                  await _unitOfWork.OrderDetail.AddAsync(detail);
                  totalPrice += detail.Price * detail.Count;
                  orderDetails.Add(detail);
              }
-             order.OrderTotal = totalPrice;
-             _unitOfWork.Order.Update(order);
-             _unitOfWork.Save();
 
-             //stripe settings
-             var domain = "https://localhost:44332/";
+             order.OrderTotal = totalPrice;
+             await _unitOfWork.Order.AddAsync(order);
+
+             var domain = "https://localhost:44332";
              var options = new SessionCreateOptions
              {
-                 PaymentMethodTypes = new List<string>
-                 {
-                   "card",
-                 },
+                 PaymentMethodTypes = new List<string> { "card" },
                  LineItems = new List<SessionLineItemOptions>(),
                  Mode = "payment",
-                 SuccessUrl = domain + $"api/Order/OrderConfirmation?id={order.Id}",
-                 CancelUrl = domain + $"api/Order/Denied",
+                 SuccessUrl = $"{domain}/api/Order/OrderConfirmation?id={order.Id}",
+                 CancelUrl = $"{domain}/api/Order/Denied"
              };
 
              foreach (var item in orderDetails)
              {
-                 var product = await _unitOfWork.Product.GetFirstOrDefaultAsync(p => p.Id == item.ProductId);
+                 var drug = await _unitOfWork.Drug.GetFirstOrDefaultAsync(p => p.Id == item.DrugId);
                  var sessionLineItem = new SessionLineItemOptions
                  {
                      PriceData = new SessionLineItemPriceDataOptions
                      {
-                         UnitAmount = (long)(item.Price * 100),//20.00 -> 2000
+                         UnitAmount = (long)(item.Price * 100), // 20.00 -> 2000
                          Currency = "usd",
                          ProductData = new SessionLineItemPriceDataProductDataOptions
                          {
-                             Name = product.EnglishName,
-                             Images = new List<string>
-                             {
-                                 product.ImgURL
-                             },
-                             Description = product.Description
-                         },
+                             Name = drug.Name,
+                             Images = new List<string> { drug.ImgURL },
+                             Description = drug.Description
+                         }
                      },
-                     Quantity = item.Count,
+                     Quantity = item.Count
                  };
                  options.LineItems.Add(sessionLineItem);
              }
 
-             var service = new SessionService();
-             Session session = service.Create(options);
+             var session = await new SessionService().CreateAsync(options);
 
-             _unitOfWork.Order.UpdateStripePaymentID(order.Id, session.Id, session.PaymentIntentId);
-             _unitOfWork.Save();
+             order.SessionId = session.Id;
+             order.PaymentIntentId = session.PaymentIntentId;
+
+             _unitOfWork.Order.Update(order);
+             await _unitOfWork.SaveAsync();
+
              Response.Headers.Add("Location", session.Url);
              return new StatusCodeResult(303);
-         }*/
-
-        [HttpPost("Checkout")]
-        public async Task<IActionResult> Checkout(IEnumerable<OrderDetailsDto> products)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(products);
-            }
-
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null)
-            {
-                return Unauthorized();
-            }
-
-            var order = new Order
-            {
-                UserId = user.Id,
-                PaymentStatus = SD.PaymentStatusPending,
-                OrderStatus = SD.StatusApproved
-            };
-
-            var orderDetails = new List<OrderDetail>();
-            double totalPrice = 0;
-
-            foreach (var product in products)
-            {
-                var detail = _mapper.Map<OrderDetail>(product);
-                detail.OrderId = order.Id;
-                await _unitOfWork.OrderDetail.AddAsync(detail);
-                totalPrice += detail.Price * detail.Count;
-                orderDetails.Add(detail);
-            }
-
-            order.OrderTotal = totalPrice;
-            await _unitOfWork.Order.AddAsync(order);
-
-            var domain = "https://localhost:44332";
-            var options = new SessionCreateOptions
-            {
-                PaymentMethodTypes = new List<string> { "card" },
-                LineItems = new List<SessionLineItemOptions>(),
-                Mode = "payment",
-                SuccessUrl = $"{domain}/api/Order/OrderConfirmation?id={order.Id}",
-                CancelUrl = $"{domain}/api/Order/Denied"
-            };
-
-            foreach (var item in orderDetails)
-            {
-                var drug = await _unitOfWork.Drug.GetFirstOrDefaultAsync(p => p.Id == item.DrugId);
-                var sessionLineItem = new SessionLineItemOptions
-                {
-                    PriceData = new SessionLineItemPriceDataOptions
-                    {
-                        UnitAmount = (long)(item.Price * 100), // 20.00 -> 2000
-                        Currency = "usd",
-                        ProductData = new SessionLineItemPriceDataProductDataOptions
-                        {
-                            Name = drug.Name,
-                            Images = new List<string> { drug.ImgURL },
-                            Description = drug.Description
-                        }
-                    },
-                    Quantity = item.Count
-                };
-                options.LineItems.Add(sessionLineItem);
-            }
-
-            var session = await new SessionService().CreateAsync(options);
-
-            order.SessionId = session.Id;
-            order.PaymentIntentId = session.PaymentIntentId;
-
-            _unitOfWork.Order.Update(order);
-            await _unitOfWork.SaveAsync();
-
-            Response.Headers.Add("Location", session.Url);
-            return new StatusCodeResult(303);
-        }
+         }
+ */
 
         [HttpDelete]
         [Route("Delete/{id}")]
@@ -224,7 +172,6 @@ namespace PharmacyWebAPI.Controllers
 
             _unitOfWork.Order.Delete(obj);
             await _unitOfWork.SaveAsync();
-
             return Ok(new { success = true, message = "Order Deleted Successfully" });
         }
 
@@ -256,88 +203,19 @@ namespace PharmacyWebAPI.Controllers
             return Ok(new { success = false, message = "Order Denied" });
         }
 
-        /*  //POST
-          [HttpPost]
-          [Route("Edit")]
-          public async Task<IActionResult> Edit(OrderDto obj)
-          {
-              if (!ModelState.IsValid)
-              {
-                  return BadRequest(new { State = ModelState, Order = obj });
-              }
+        //POST
+        [HttpPost]
+        [Route("Edit")]
+        public async Task<IActionResult> Edit(OrderDto obj)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new { State = ModelState, Order = obj });
+            }
 
-              _unitOfWork.Order.Update(_mapper.Map<Order>(obj));
-              await _unitOfWork.SaveAsync();
-              return Ok(new { success = true, message = "Order Updated Successfully", Order = obj });
-          }*/
-
-        /*  public Order GenerateOrder()
-          {
-              var order = new Order
-              {
-                  UserId = "73a7b2fe-8769-4a55-960c-9370c95c450e",
-                  PaymentStatus = SD.PaymentStatusPending,
-                  OrderStatus = SD.StatusApproved
-              };
-              return order;
-          }
-
-          public SessionCreateOptions GenerateOptions(int OrderId)
-          {
-              var domain = "https://localhost:44332";
-              var options = new SessionCreateOptions
-              {
-                  PaymentMethodTypes = new List<string> { "card" },
-                  LineItems = new List<SessionLineItemOptions>(),
-                  Mode = "payment",
-                  SuccessUrl = $"{domain}/api/Order/OrderConfirmation?id={OrderId}",
-                  CancelUrl = $"{domain}/api/Order/Denied"
-              };
-              return options;
-          }*/
-
-        /*  public async Task SetOptionsValues(SessionCreateOptions options, List<OrderDetail> orderDetails)
-          {
-              foreach (var item in orderDetails)
-              {
-                  var product = await _unitOfWork.Drug.GetFirstOrDefaultAsync(p => p.Id == item.DrugId);
-                  var sessionLineItem = new SessionLineItemOptions
-                  {
-                      PriceData = new SessionLineItemPriceDataOptions
-                      {
-                          UnitAmount = (long)(item.Price * 100), // 20.00 -> 2000
-                          Currency = "usd",
-                          ProductData = new SessionLineItemPriceDataProductDataOptions
-                          {
-                              Name = product.Name,
-                              Images = new List<string> { product.ImgURL },
-                              Description = product.Description
-                          }
-                      },
-                      Quantity = item.Count
-                  };
-                  options.LineItems.Add(sessionLineItem);
-                  product.Stock -= item.Count;
-                  _unitOfWork.Drug.Update(product);
-              }
-          }*/
-        /*
-                public double GetTotalPrice(List<OrderDetail> Drugs)
-                {
-                    double totalPrice = 0;
-                    foreach (var d in Drugs)
-                    {
-                        totalPrice += d.Price * d.Count;
-                    }
-                    return totalPrice;
-                }
-
-                public void SetOrderId(int OrderId, List<OrderDetail> details)
-                {
-                    foreach (var d in details)
-                    {
-                        d.OrderId = OrderId;
-                  */ /* }
-                }*/
+            _unitOfWork.Order.Update(_mapper.Map<Order>(obj));
+            await _unitOfWork.SaveAsync();
+            return Ok(new { success = true, message = "Order Updated Successfully", Order = obj });
+        }
     }
 }

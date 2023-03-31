@@ -11,14 +11,10 @@ namespace PharmacyWebAPI.Utility.Settings
             CreateMap<Drug, DrugGetDto>()
                 .ReverseMap()
                 .ForMember(dest => dest.Category, src => src.Ignore())
-                .ForMember(dest => dest.Manufacturer, src => src.Ignore())
-                .ForMember(dest => dest.ManufacturerName, src => src.Ignore())
-                .ForMember(dest => dest.CategoryName, src => src.Ignore());
+                .ForMember(dest => dest.Manufacturer, src => src.Ignore());
 
             CreateMap<Drug, DrugDetailsGetDto>()
-                .ReverseMap()
-                .ForMember(dest => dest.ManufacturerName, src => src.Ignore())
-                .ForMember(dest => dest.CategoryName, src => src.Ignore());
+                .ReverseMap();
 
             CreateMap<Drug, PostDrugDto>()
                 .ForMember(dest => dest.Categories, src => src.Ignore())

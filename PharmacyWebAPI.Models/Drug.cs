@@ -22,9 +22,6 @@ namespace PharmacyWebAPI.Models
         [ForeignKey("Category")]
         public int CategoryId { get; set; }
 
-        public string ManufacturerName { get; set; }
-        public string CategoryName { get; set; }
-
         public Manufacturer Manufacturer { get; set; }
         public Category Category { get; set; }
 

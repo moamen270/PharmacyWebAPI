@@ -158,7 +158,7 @@ namespace PharmacyWebAPI.Controllers
         }
 
         [HttpGet]
-        [Route("GetByBrand/{id}")]
+        [Route("GetByManufacturer/{id}")]
         public async Task<IActionResult> GetByBrand(int id)
         {
             var drugs = await _unitOfWork.Drug.GetAllFilterAsync(x => x.ManufacturerId == id, c => c.Category, z => z.Manufacturer);

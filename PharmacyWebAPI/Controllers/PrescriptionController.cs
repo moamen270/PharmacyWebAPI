@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Newtonsoft.Json;
 using PharmacyWebAPI.Models.Dto;
 
 namespace PharmacyWebAPI.Controllers
@@ -123,22 +124,24 @@ namespace PharmacyWebAPI.Controllers
         }
 
         [HttpPost]
-        [Route("Dispens")]
-        public async Task<IActionResult> Dispens(Prescription prescription)
+        [Route("Dispensing ")]
+        public async Task<IActionResult> Dispensing(int prescriptionId)
         {
             if (!ModelState.IsValid)
-                return BadRequest(new { State = ModelState, Prescription = prescription });
+                return BadRequest(new { State = ModelState, PrescriptionId = prescriptionId });
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+                return Unauthorized();
+            var prescription = await _unitOfWork.Prescription.GetFirstOrDefaultAsync(p => p.Id == prescriptionId);
+            if (prescription == null)
+                return NotFound();
+
+            var prescriptionDetails = await _unitOfWork.PrescriptionDetails.GetAllFilterAsync(p => p.PrescriptionId == prescription.Id);
+            var orderDetails = _unitOfWork.PrescriptionDetails.PrescriptionDetailsToOrderDetails(prescriptionDetails.ToList());
+
+            //var ss = JsonConvert.SerializeObject(orderDetails);
 
             return Ok(new { success = true, });
         }
-
-        /*    private async Task<Order> ConvertPrescriptionToOrder(Prescription prescription)
-            {
-                var prescriptionDetails = await _unitOfWork.PrescriptionDetails.GetAllFilterAsync(p => p.PrescriptionId == prescription.Id);
-            }
-
-            private Task<Order> ConvertPrescriptionDetailsToOrderDetails(Order order, List<PrescriptionDetails> prescriptionDetails)
-            {
-            }*/
     }
 }
