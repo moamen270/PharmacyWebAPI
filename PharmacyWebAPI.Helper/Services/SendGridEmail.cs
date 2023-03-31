@@ -1,9 +1,9 @@
 ﻿using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using SendGrid;
-using SendGrid.Helpers.Mail;
 using PharmacyWebAPI.Utility.Services.IServices;
-using PharmacyWebAPI.Utility.Settings;
+using PharmacyWebAPI.Utility.Setting;
+using SendGrid;
+using SendGrid.Utilitys.Mail;
 
 namespace PharmacyWebAPI.Utility.Services
 {

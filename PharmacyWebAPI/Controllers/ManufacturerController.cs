@@ -45,7 +45,7 @@
                 return BadRequest(new { State = ModelState, Manufacturer = model });
 
             await _unitOfWork.Manufacturer.AddAsync(model);
-            await _unitOfWork.SaveAsynce();
+            await _unitOfWork.SaveAsync();
 
             return Ok(new { success = true, message = "Brand Created Successfully", Brand = model });
         }
@@ -59,7 +59,7 @@
                 return NotFound(new { success = false, message = "NotFound" });
 
             _unitOfWork.Manufacturer.Delete(brand);
-            await _unitOfWork.SaveAsynce();
+            await _unitOfWork.SaveAsync();
 
             return Ok(new { success = true, message = "Brand Deleted Successfully" });
         }
@@ -74,7 +74,7 @@
                 return BadRequest(new { State = ModelState, Manufacturer = obj });
             }
             _unitOfWork.Manufacturer.Update(obj);
-            await _unitOfWork.SaveAsynce();
+            await _unitOfWork.SaveAsync();
             return Ok(new { success = true, message = "Brand Updated Successfully" });
         }
     }

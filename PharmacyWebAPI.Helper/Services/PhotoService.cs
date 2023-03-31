@@ -3,7 +3,7 @@ using CloudinaryDotNet.Actions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using PharmacyWebAPI.Utility.Services.IServices;
-using PharmacyWebAPI.Utility.Settings;
+using PharmacyWebAPI.Utility.Setting;
 
 namespace PharmacyWebAPI.Utility.Services
 {

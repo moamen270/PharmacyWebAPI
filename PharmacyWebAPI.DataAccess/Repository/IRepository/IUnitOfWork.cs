@@ -11,6 +11,6 @@
         IPrescriptionRepository Prescription { get; }
         IPrescriptionDetailsRepository PrescriptionDetails { get; }
 
-        Task<int> SaveAsynce();
+        Task<int> SaveAsync();
     }
 }

@@ -51,7 +51,7 @@ namespace PharmacyWebAPI.Controllers
                 ManufacturerId = (await _unitOfWork.Manufacturer.GetFirstOrDefaultAsync()).Id
             };
             await _unitOfWork.Drug.AddAsync(model);
-            await _unitOfWork.SaveAsynce();
+            await _unitOfWork.SaveAsync();
             return Ok(new { success = true, message = "Drug Created Successfully", model });
         }
 
@@ -81,7 +81,7 @@ namespace PharmacyWebAPI.Controllers
             Drug drug = _mapper.Map<Drug>(obj);
 
             await _unitOfWork.Drug.AddAsync(drug);
-            await _unitOfWork.SaveAsynce();
+            await _unitOfWork.SaveAsync();
             return Ok(new { success = true, message = "Drug Created Successfully", Drug = drug });
         }
 
@@ -96,7 +96,7 @@ namespace PharmacyWebAPI.Controllers
                 return NotFound(new { success = false, message = "Not Found" });
             }
             _unitOfWork.Drug.Delete(obj);
-            await _unitOfWork.SaveAsynce();
+            await _unitOfWork.SaveAsync();
             return Ok(new { success = true, message = "Drug Deleted Successfully" });
         }
 
@@ -130,7 +130,7 @@ namespace PharmacyWebAPI.Controllers
             Drug drug = _mapper.Map<Drug>(obj);
 
             _unitOfWork.Drug.Update(drug);
-            await _unitOfWork.SaveAsynce();
+            await _unitOfWork.SaveAsync();
             return Ok(new { success = true, message = "Drug Updated Successfully", Drug = drug });
         }
 

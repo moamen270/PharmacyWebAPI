@@ -1,4 +1,4 @@
-﻿namespace PharmacyWebAPI.Utility.Settings
+﻿namespace PharmacyWebAPI.Utility.Setting
 {
     public class AuthMessageSenderOptions
     {

@@ -46,7 +46,7 @@
                 return BadRequest(new { State = ModelState, Category = model });
             }
             await _unitOfWork.Category.AddAsync(model);
-            await _unitOfWork.SaveAsynce();
+            await _unitOfWork.SaveAsync();
 
             return Ok(new { success = true, message = "Category Created Successfully", Category = model });
         }
@@ -60,7 +60,7 @@
                 return NotFound(new { success = false, message = "NotFound" });
 
             _unitOfWork.Category.Delete(Category);
-            await _unitOfWork.SaveAsynce();
+            await _unitOfWork.SaveAsync();
 
             return Ok(new { success = true, message = "Category Deleted Successfully" });
         }
@@ -76,7 +76,7 @@
             }
 
             _unitOfWork.Category.Update(obj);
-            await _unitOfWork.SaveAsynce();
+            await _unitOfWork.SaveAsync();
             return Ok(new { success = true, message = "Category Updated Successfully", Category = obj });
         }
     }

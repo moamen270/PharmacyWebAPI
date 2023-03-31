@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace PharmacyWebAPI.Models.ViewModels
+namespace PharmacyWebAPI.Models.Dto
 {
     public class RoleFormDto
     {
