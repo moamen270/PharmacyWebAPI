@@ -3,9 +3,9 @@
     public class UnitOfWork : IUnitOfWork
     {
         private readonly ApplicationDbContext _context;
-        public IProductRepository Product { get; private set; }
+        public IDrugRepository Drug { get; private set; }
 
-        public IBrandRepository Brand { get; private set; }
+        public IManufacturerRepository Manufacturer { get; private set; }
 
         public ICategoryRepository Category { get; private set; }
 
@@ -20,8 +20,8 @@
         public UnitOfWork(ApplicationDbContext context)
         {
             _context = context;
-            Product = new ProductRepository(_context);
-            Brand = new BrandRepository(_context);
+            Drug = new DrugRepository(_context);
+            Manufacturer = new ManufacturerRepository(_context);
             Category = new CategoryRepository(_context);
             User = new UserRepository(_context);
             Order = new OrderRepository(_context);
@@ -35,9 +35,9 @@
             _context.Dispose();
         }
 
-        public int Save()
+        public async Task<int> SaveAsynce()
         {
-            return _context.SaveChanges();
+            return await _context.SaveChangesAsync();
         }
     }
 }

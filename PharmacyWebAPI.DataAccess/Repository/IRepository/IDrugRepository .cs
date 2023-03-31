@@ -1,6 +1,6 @@
 ﻿namespace PharmacyWebAPI.DataAccess.Repository.IRepository
 {
-    public interface IProductRepository : IRepository<Product>
+    public interface IDrugRepository : IRepository<Drug>
     {
     }
 }
