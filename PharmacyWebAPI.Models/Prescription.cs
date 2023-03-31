@@ -4,7 +4,7 @@
     {
         public int Id { get; set; }
         public DateTime CreationDateTime { get; set; } = DateTime.Now;
-        public bool dispensing { get; set; } = false;
+        public bool Dispensing { get; set; } = false;
 
         [ForeignKey("Patient")]
         public string PatientId { get; set; }
