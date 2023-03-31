@@ -8,8 +8,8 @@ namespace PharmacyWebAPI.Extensions
         {
             services
                 .AddIdentity<User, IdentityRole>()
-                .AddEntityFrameworkStores<ApplicationDbContext>()
-                .AddDefaultTokenProviders();
+                .AddEntityFrameworkStores<ApplicationDbContext>()/*
+                .AddDefaultTokenProviders()*/;
 
             services.Configure<IdentityOptions>(opt =>
             {

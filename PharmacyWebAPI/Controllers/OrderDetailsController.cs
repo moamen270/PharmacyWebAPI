@@ -1,9 +1,9 @@
-﻿using AutoMapper;
+﻿/*using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using PharmacyWebAPI.DataAccess.Repository.IRepository;
 using PharmacyWebAPI.Models;
-using PharmacyWebAPI.Models.ViewModels;
+using PharmacyWebAPI.Models.Dto;
 using System.Diagnostics;
 
 namespace PharmacyWebAPI.Controllers
@@ -22,13 +22,14 @@ namespace PharmacyWebAPI.Controllers
             _userManager = userManager;
             _mapper = mapper;
         }
+
         [HttpGet]
         [Route("Get")]
         public async Task<IActionResult> Get(int id)
         {
-            var obj = await  _unitOfWork.PrescriptionDetails.GetAsync(id);
-            if(obj is null)
-            return BadRequest("Not Found");
+            var obj = await _unitOfWork.PrescriptionDetails.GetAsync(id);
+            if (obj is null)
+                return BadRequest("Not Found");
             return Ok(obj);
         }
 
@@ -48,7 +49,7 @@ namespace PharmacyWebAPI.Controllers
             {
                 PrescriptionId = _unitOfWork.Prescription.GetFirstOrDefaultAsync().Id,
             });
-            _unitOfWork.Save();
+            _unitOfWork.SaveAsynce();
             return Ok(new { success = true, message = "Product Created Successfully" });
         }
 
@@ -69,7 +70,7 @@ namespace PharmacyWebAPI.Controllers
                 return BadRequest(viewModel);
             }
             await _unitOfWork.PrescriptionDetails.AddAsync(_mapper.Map<PrescriptionDetails>(viewModel));
-            _unitOfWork.Save();
+            _unitOfWork.SaveAsynce();
             return Ok(viewModel);
         }
 
@@ -82,7 +83,7 @@ namespace PharmacyWebAPI.Controllers
                 return BadRequest(new { success = false, message = "Error While Deleting" });
 
             _unitOfWork.PrescriptionDetails.Delete(obj);
-            _unitOfWork.Save();
+            _unitOfWork.SaveAsynce();
 
             return Ok(new { success = true, message = "PrescriptionDetails Deleted Successfully" });
         }
@@ -98,8 +99,8 @@ namespace PharmacyWebAPI.Controllers
             }
 
             _unitOfWork.PrescriptionDetails.Update(_mapper.Map<PrescriptionDetails>(obj));
-            _unitOfWork.Save();
+            _unitOfWork.SaveAsynce();
             return Ok("PrescriptionDetails updated successfully");
         }
     }
-}
+}*/
