@@ -29,7 +29,7 @@ namespace PharmacyWebAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> Index()
         {
             IEnumerable<Category> obj = await _unitOfWork.Category.GetAllAsync();
             return Ok(new { Categories = obj });
