@@ -1,5 +1,8 @@
+using System.Text.Json.Serialization;
+
 namespace PharmacyWebAPI.Models.Enums
 {
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum DosageForm
     {
         Tablet = 1,
