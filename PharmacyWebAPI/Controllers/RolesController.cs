@@ -5,7 +5,7 @@ using PharmacyWebAPI.Models.Dto;
 namespace PharmacyWebAPI.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [Authorize(Roles = "Admin")]
     public class RolesController : ControllerBase
     {

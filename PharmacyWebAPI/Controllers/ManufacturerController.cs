@@ -1,7 +1,7 @@
 ﻿namespace PharmacyWebAPI.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     public class ManufacturerController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;
@@ -12,17 +12,16 @@
         }
 
         [HttpGet]
-        [Route("Get")]
-        public async Task<IActionResult> Get(int id)
+        [Route("GetById")]
+        public async Task<IActionResult> GetById(int id)
         {
-            Manufacturer obj = await _unitOfWork.Manufacturer.GetAsync(id);
+            Manufacturer obj = await _unitOfWork.Manufacturer.GetFirstOrDefaultAsync(p => p.Id == id);
             if (obj is null)
                 return NotFound(new { success = false, message = "Not Found" });
             return Ok(new { Brand = obj });
         }
 
         [HttpGet]
-        [Route("GetAll")]
         public async Task<IActionResult> GetAll()
         {
             IEnumerable<Manufacturer> obj = await _unitOfWork.Manufacturer.GetAllAsync();
@@ -54,7 +53,7 @@
         [Route("Delete/{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var brand = await _unitOfWork.Manufacturer.GetAsync(id);
+            var brand = await _unitOfWork.Manufacturer.GetFirstOrDefaultAsync(p => p.Id == id);
             if (brand == null)
                 return NotFound(new { success = false, message = "NotFound" });
 
@@ -64,8 +63,7 @@
             return Ok(new { success = true, message = "Brand Deleted Successfully" });
         }
 
-        //POST
-        [HttpPost]
+        [HttpPut]
         [Route("Edit")]
         public async Task<IActionResult> Edit(Manufacturer obj)
         {

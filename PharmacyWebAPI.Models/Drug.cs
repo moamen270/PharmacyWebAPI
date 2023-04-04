@@ -27,7 +27,7 @@ namespace PharmacyWebAPI.Models
 
         private static double GenerateRandomNumber()
         {
-            Random random = new Random();
+            Random random = new();
             var number = random.NextDouble() * (100 - 1) + 1;
             var result = double.Parse(number.ToString("00.00"));
             return result;

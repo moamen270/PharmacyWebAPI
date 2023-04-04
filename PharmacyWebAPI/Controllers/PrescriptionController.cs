@@ -5,7 +5,7 @@ using PharmacyWebAPI.Models.Dto;
 namespace PharmacyWebAPI.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     public class PrescriptionController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;
@@ -20,8 +20,8 @@ namespace PharmacyWebAPI.Controllers
         }
 
         [HttpGet]
-        [Route("Get")]
-        public async Task<IActionResult> Get(int id)
+        [Route("GetById")]
+        public async Task<IActionResult> GetById(int id)
         {
             var obj = await _unitOfWork.Prescription.GetFirstOrDefaultAsync(p => p.Id == id);
             if (obj is null)
@@ -30,7 +30,6 @@ namespace PharmacyWebAPI.Controllers
         }
 
         [HttpGet]
-        [Route("GetAll")]
         public async Task<IActionResult> GetAll()
         {
             var user = (await _userManager.GetUserAsync(User));
@@ -88,7 +87,10 @@ namespace PharmacyWebAPI.Controllers
             {
                 return BadRequest(viewModel);
             }
-            viewModel.DoctorId = (await _userManager.GetUserAsync(User)).Id;
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+                return Unauthorized(viewModel);
+            viewModel.DoctorId = user.Id;
             await _unitOfWork.Prescription.AddAsync(_mapper.Map<Prescription>(viewModel));
             await _unitOfWork.SaveAsync();
             return Ok(new { success = true, message = "Prescription Created Successfully", viewModel });
@@ -98,7 +100,7 @@ namespace PharmacyWebAPI.Controllers
         [Route("Delete/{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var obj = await _unitOfWork.Prescription.GetAsync(id);
+            var obj = await _unitOfWork.Prescription.GetFirstOrDefaultAsync(p => p.Id == id); ;
             if (obj == null)
                 return BadRequest(new { success = false, message = "Error While Deleting" });
 
@@ -108,8 +110,7 @@ namespace PharmacyWebAPI.Controllers
             return Ok(new { success = true, message = "Prescription Deleted Successfully" });
         }
 
-        //POST
-        [HttpPost]
+        [HttpPut]
         [Route("Edit")]
         public async Task<IActionResult> Edit(PrescriptionDto obj)
         {

@@ -10,7 +10,7 @@ using System.Text;
 namespace PharmacyWebAPI.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     public class HomeController : ControllerBase
     {
         [HttpGet]
@@ -47,7 +47,7 @@ namespace PharmacyWebAPI.Controllers
 
         private static string Drow(string text)
         {
-            Dictionary<int, string[]> Letters = new Dictionary<int, string[]>();
+            Dictionary<int, string[]> Letters = new();
             int counter = 0;
             foreach (var letter in text)
             {
@@ -327,7 +327,7 @@ namespace PharmacyWebAPI.Controllers
                 }
                 counter++;
             }
-            StringBuilder stringBuilder = new StringBuilder();
+            StringBuilder stringBuilder = new();
 
             Console.WriteLine("\n\n");
             for (int ii = 0; ii < 5; ii++)
