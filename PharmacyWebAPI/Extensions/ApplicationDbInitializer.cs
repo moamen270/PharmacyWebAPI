@@ -164,7 +164,12 @@ namespace PharmacyWebAPI.Extensions
                     {
                         Name = "Nonsteroidal Anti-Inflammatory Drug (NSAID)",
                         ImgURL = "https://example.com/anticoagulant.jpg"
-                    }
+                    },
+                    new Category()
+                    {
+                        Name = "Allergy Relief",
+                        ImgURL = "https://example.com/anticoagulant.jpg"
+                    },
                 });
                     context.SaveChanges();
                 }
@@ -283,12 +288,12 @@ namespace PharmacyWebAPI.Extensions
                 //Drugs
                 if (!context.Drugs.Any())
                 {
-                    /*context.Categories.Add(new Category()
-                    {
-                        Name = "Allergy Relief",
-                        ImgURL = "https://example.com/anticoagulant.jpg"
-                    });
-                    context.SaveChanges();*/
+                    /* context.Categories.Add(new Category()
+                     {
+                         Name = "Allergy Relief",
+                         ImgURL = "https://example.com/anticoagulant.jpg"
+                     });
+                     context.SaveChanges();*/
                     context.Drugs.Add(new Drug()
                     {
                         Name = "Amoxicillin",

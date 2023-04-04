@@ -23,7 +23,7 @@ namespace PharmacyWebAPI.Extensions
 
             services.AddCors(p => p.AddPolicy("corsapp", builder =>
             {
-                builder.WithOrigins("https://ezdrug.tech/api")
+                builder.WithOrigins("https://api.ezdrug.tech")
                        .AllowAnyOrigin()
                        .AllowAnyMethod()
                        .AllowAnyHeader();
