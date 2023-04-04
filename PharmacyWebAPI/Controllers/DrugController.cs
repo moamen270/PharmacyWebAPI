@@ -4,39 +4,35 @@ using PharmacyWebAPI.Models.Dto;
 namespace PharmacyWebAPI.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     public class DrugController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly UserManager<User> _userManager;
         private readonly IMapper _mapper;
 
-        public DrugController(IUnitOfWork unitOfWork, UserManager<User> userManager, IMapper mapper)
+        public DrugController(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
-            _userManager = userManager;
             _mapper = mapper;
         }
 
         [HttpGet]
-        [Route("Get")]
-        public async Task<IActionResult> Get(int id)
+        [Route("GetById")]
+        public async Task<IActionResult> GetById(int id)
         {
-            var obj = await _unitOfWork.Drug.GetAsync(id);
-
-            if (obj is null)
+            var drug = await _unitOfWork.Drug.GetFirstOrDefaultAsync(p => p.Id == id);
+            if (drug is null)
                 return NotFound(new { success = false, message = "Not Found" });
-            DrugDetailsGetDto DrugDetailsGetDto = _mapper.Map<DrugDetailsGetDto>(obj);
+            var obj = _mapper.Map<DrugDetailsGetDto>(drug);
 
-            return Ok(new { Drug = DrugDetailsGetDto });
+            return Ok(new { Drug = obj });
         }
 
         [HttpGet]
-        [Route("GetAll")]
         public async Task<IActionResult> GetAll()
         {
             IEnumerable<Drug> Drug = await _unitOfWork.Drug.GetAllAsync(c => c.Category, z => z.Manufacturer);
-            IEnumerable<DrugDetailsGetDto> DrugDetailsGetDto = _mapper.Map<IEnumerable<DrugDetailsGetDto>>(Drug);
+            var DrugDetailsGetDto = _mapper.Map<IEnumerable<DrugDetailsGetDto>>(Drug);
             return Ok(new { Drugs = DrugDetailsGetDto });
         }
 
@@ -59,7 +55,7 @@ namespace PharmacyWebAPI.Controllers
         [Route("Create")]
         public async Task<IActionResult> Create()
         {
-            PostDrugDto PostDrugDto = new PostDrugDto
+            PostDrugDto PostDrugDto = new()
             {
                 Categories = await _unitOfWork.Category.GetAllAsync(),
                 Manufacturers = await _unitOfWork.Manufacturer.GetAllAsync()
@@ -78,7 +74,7 @@ namespace PharmacyWebAPI.Controllers
                 return BadRequest(new { State = ModelState, Drug = obj });
             }
 
-            Drug drug = _mapper.Map<Drug>(obj);
+            var drug = _mapper.Map<Drug>(obj);
 
             await _unitOfWork.Drug.AddAsync(drug);
             await _unitOfWork.SaveAsync();
@@ -87,10 +83,10 @@ namespace PharmacyWebAPI.Controllers
 
         //POST
         [HttpDelete]
-        [Route("Delete")]
+        [Route("Delete/{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var obj = await _unitOfWork.Drug.GetAsync(id);
+            var obj = await _unitOfWork.Drug.GetFirstOrDefaultAsync(p => p.Id == id);
             if (obj == null)
             {
                 return NotFound(new { success = false, message = "Not Found" });
@@ -104,11 +100,11 @@ namespace PharmacyWebAPI.Controllers
         [Route("Edit")]
         public async Task<IActionResult> Edit(int id)
         {
-            var drug = await _unitOfWork.Drug.GetAsync(id);
+            var drug = await _unitOfWork.Drug.GetFirstOrDefaultAsync(p => p.Id == id);
             if (drug == null)
                 return NotFound(new { success = false, message = "Not Found" });
 
-            PostDrugDto drugDto = _mapper.Map<PostDrugDto>(drug);
+            var drugDto = _mapper.Map<PostDrugDto>(drug);
             drugDto.Categories = await _unitOfWork.Category.GetAllAsync();
             drugDto.Manufacturers = await _unitOfWork.Manufacturer.GetAllAsync();
 
@@ -135,25 +131,13 @@ namespace PharmacyWebAPI.Controllers
         }
 
         [HttpGet]
-        [Route("Details")]
-        public async Task<IActionResult> Details(int id)
-        {
-            Drug drug = await _unitOfWork.Drug.GetFirstOrDefaultAsync(p => p.Id == id);
-            if (drug is null)
-                return NotFound(new { success = false, message = "Not Found" });
-            DrugDetailsGetDto obj = _mapper.Map<DrugDetailsGetDto>(drug);
-
-            return Ok(new { Drug = obj });
-        }
-
-        [HttpGet]
         [Route("GetByCategory/{id}")]
         public async Task<IActionResult> GetByCategory(int id)
         {
             var drugs = await _unitOfWork.Drug.GetAllFilterAsync(x => x.CategoryId == id, c => c.Category, z => z.Manufacturer);
-            if (drugs.Count() == 0)
+            if (drugs.Any())
                 return NotFound(new { success = false, message = "Not Found" });
-            IEnumerable<DrugDetailsGetDto> DrugsDto = _mapper.Map<IEnumerable<DrugDetailsGetDto>>(drugs);
+            var DrugsDto = _mapper.Map<IEnumerable<DrugDetailsGetDto>>(drugs);
             return Ok(new { Drugs = DrugsDto });
         }
 
@@ -162,9 +146,9 @@ namespace PharmacyWebAPI.Controllers
         public async Task<IActionResult> GetByBrand(int id)
         {
             var drugs = await _unitOfWork.Drug.GetAllFilterAsync(x => x.ManufacturerId == id, c => c.Category, z => z.Manufacturer);
-            if (drugs.Count() == 0)
+            if (drugs.Any())
                 return NotFound(new { success = false, message = "Not Found" });
-            IEnumerable<DrugDetailsGetDto> DrugsDto = _mapper.Map<IEnumerable<DrugDetailsGetDto>>(drugs);
+            var DrugsDto = _mapper.Map<IEnumerable<DrugDetailsGetDto>>(drugs);
             return Ok(new { Drugs = DrugsDto });
         }
     }

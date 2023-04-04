@@ -5,7 +5,7 @@ using PharmacyWebAPI.Utility.Services.IServices;
 namespace PharmacyWebAPI.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     public class AccountController : ControllerBase
     {
         private readonly UserManager<User> _userManager;
@@ -23,7 +23,7 @@ namespace PharmacyWebAPI.Controllers
         [Route("Register")]
         public IActionResult GetRegister()
         {
-            RegisterDto user = new RegisterDto();
+            RegisterDto user = new();
             return Ok(new { User = user });
         }
 
@@ -52,7 +52,7 @@ namespace PharmacyWebAPI.Controllers
         [Route("Login")]
         public IActionResult GetLogin()
         {
-            LoginDto user = new LoginDto();
+            LoginDto user = new();
             return Ok(new { User = user });
         }
 
@@ -98,7 +98,7 @@ namespace PharmacyWebAPI.Controllers
                     return NotFound(new { success = false, message = "NotFound" });
                 }
                 var code = await _userManager.GeneratePasswordResetTokenAsync(user);
-                var callbackurl = Url.Action("ResetPassword", "Account", values: new { userId = user.Id, code = code }, protocol: Request.Scheme);
+                var callbackurl = Url.Action("ResetPassword", "Account", values: new { userId = user.Id, Code = code }, protocol: Request.Scheme);
 
                 await _sendGridEmail.SendEmailAsync(model.Email, "Reset Email Confirmation", "Please reset email by going to this " +
                     "<a href=\"" + callbackurl + "\">link</a>");
@@ -109,9 +109,9 @@ namespace PharmacyWebAPI.Controllers
 
         [HttpGet]
         [Route("ResetPassword")]
-        public IActionResult ResetPassword(string code)
+        public IActionResult ResetPassword(string Code)
         {
-            return code is null ? BadRequest() : Ok();
+            return Code is null ? BadRequest() : Ok();
         }
 
         [HttpPost]

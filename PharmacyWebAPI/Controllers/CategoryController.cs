@@ -1,28 +1,34 @@
-﻿namespace PharmacyWebAPI.Controllers
+﻿using AutoMapper;
+using PharmacyWebAPI.Models.Dto;
+
+namespace PharmacyWebAPI.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     public class CategoryController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IMapper _mapper;
 
-        public CategoryController(IUnitOfWork unitOfWork)
+        public CategoryController(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
+            _mapper = mapper;
         }
 
         [HttpGet]
-        [Route("Get")]
-        public async Task<IActionResult> Get(int id)
+        [Route("GetById")]
+        public async Task<IActionResult> GetById(int id)
         {
-            var obj = await _unitOfWork.Category.GetAsync(id);
-            if (obj is null)
-                return NotFound(new { success = false, message = "NotFound" });
-            return Ok(new { Category = obj });
+            var drug = await _unitOfWork.Category.GetFirstOrDefaultAsync(p => p.Id == id);
+            if (drug is null)
+                return NotFound(new { success = false, message = "Not Found" });
+            var obj = _mapper.Map<CategoryDto>(drug);
+
+            return Ok(new { Drug = obj });
         }
 
         [HttpGet]
-        [Route("GetAll")]
         public async Task<IActionResult> GetAll()
         {
             IEnumerable<Category> obj = await _unitOfWork.Category.GetAllAsync();
@@ -55,7 +61,7 @@
         [Route("Delete/{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var Category = await _unitOfWork.Category.GetAsync(id);
+            var Category = await _unitOfWork.Category.GetFirstOrDefaultAsync(p => p.Id == id);
             if (Category == null)
                 return NotFound(new { success = false, message = "NotFound" });
 
@@ -66,7 +72,19 @@
         }
 
         //POST
-        [HttpPost]
+        [HttpGet]
+        [Route("Edit")]
+        public async Task<IActionResult> Edit(int id)
+        {
+            var category = await _unitOfWork.Category.GetFirstOrDefaultAsync(p => p.Id == id);
+            if (category == null)
+                return NotFound();
+
+            return Ok(new { Category = category });
+        }
+
+        //POST
+        [HttpPut]
         [Route("Edit")]
         public async Task<IActionResult> Edit(Category obj)
         {

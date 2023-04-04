@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using PharmacyWebAPI.Models.Dto;
 using Stripe;
 using Stripe.Checkout;
@@ -6,7 +7,7 @@ using Stripe.Checkout;
 namespace PharmacyWebAPI.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     public class OrderController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;
@@ -21,17 +22,16 @@ namespace PharmacyWebAPI.Controllers
         }
 
         [HttpGet]
-        [Route("Get")]
-        public async Task<IActionResult> Get(int id)
+        [Route("GetById")]
+        public async Task<IActionResult> GetById(int id)
         {
-            var obj = await _unitOfWork.Order.GetAsync(id);
+            var obj = await _unitOfWork.Order.GetFirstOrDefaultAsync(p => p.Id == id);
             if (obj is null)
                 return NotFound();
             return Ok(new { Order = obj });
         }
 
         [HttpGet]
-        [Route("GetAll")]
         public async Task<IActionResult> GetAll()
         {
             IEnumerable<Order> obj = await _unitOfWork.Order.GetAllAsync();
@@ -40,11 +40,15 @@ namespace PharmacyWebAPI.Controllers
 
         [HttpPost]
         [Route("QuickCreate")]
+        [Authorize]
         public async Task<IActionResult> QuickCreate()
         {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+                return Unauthorized();
             await _unitOfWork.Order.AddAsync(new Order
             {
-                UserId = (await _userManager.GetUserAsync(User)).Id,
+                UserId = user.Id,
             });
             await _unitOfWork.SaveAsync();
             return Ok(new { success = true, message = "Order Created Successfully" });
@@ -66,10 +70,10 @@ namespace PharmacyWebAPI.Controllers
                 return BadRequest(new { State = ModelState, OrderDetails = Drugs });
             }
             var user = await _userManager.GetUserAsync(User);
-            /*if (user == null)
+            if (user == null)
             {
                 return Unauthorized();
-            }*/
+            }
 
             var orderDetails = _mapper.Map<IEnumerable<OrderDetail>>(Drugs).ToList();
             var order = _unitOfWork.Order.GenerateOrder(user.Id);
@@ -203,8 +207,7 @@ namespace PharmacyWebAPI.Controllers
             return Ok(new { success = false, message = "Order Denied" });
         }
 
-        //POST
-        [HttpPost]
+        [HttpPut]
         [Route("Edit")]
         public async Task<IActionResult> Edit(OrderDto obj)
         {
