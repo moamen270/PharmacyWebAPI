@@ -1,4 +1,5 @@
 global using PharmacyWebAPI.Utility;
+using CloudinaryDotNet;
 using Microsoft.EntityFrameworkCore;
 using PharmacyWebAPI.DataAccess;
 using PharmacyWebAPI.Extensions;
@@ -24,12 +25,19 @@ var app = builder.Build();
 */
 app.UseCors("corsapp");
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+/*if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
-}
-
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "EzDrug APIs");
+    });
+}*/
+app.UseSwagger();
+app.UseSwaggerUI(c =>
+{
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "EzDrug APIs");
+});
 app.UseHttpsRedirection();
 StripeConfiguration.ApiKey = builder.Configuration.GetSection("Stripe:SecretKey").Get<string>();
 

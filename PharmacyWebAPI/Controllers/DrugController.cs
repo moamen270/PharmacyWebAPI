@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using PharmacyWebAPI.Models.Dto;
+using PharmacyWebAPI.Utility.Services.IServices;
 
 namespace PharmacyWebAPI.Controllers
 {
@@ -9,11 +10,13 @@ namespace PharmacyWebAPI.Controllers
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
+        private readonly IPhotoService _photoService;
 
-        public DrugController(IUnitOfWork unitOfWork, IMapper mapper)
+        public DrugController(IUnitOfWork unitOfWork, IMapper mapper, IPhotoService photoService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _photoService = photoService;
         }
 
         [HttpGet]
@@ -135,7 +138,7 @@ namespace PharmacyWebAPI.Controllers
         public async Task<IActionResult> GetByCategory(int id)
         {
             var drugs = await _unitOfWork.Drug.GetAllFilterAsync(x => x.CategoryId == id, c => c.Category, z => z.Manufacturer);
-            if (drugs.Any())
+            if (!drugs.Any())
                 return NotFound(new { success = false, message = "Not Found" });
             var DrugsDto = _mapper.Map<IEnumerable<DrugDetailsGetDto>>(drugs);
             return Ok(new { Drugs = DrugsDto });
@@ -146,10 +149,29 @@ namespace PharmacyWebAPI.Controllers
         public async Task<IActionResult> GetByBrand(int id)
         {
             var drugs = await _unitOfWork.Drug.GetAllFilterAsync(x => x.ManufacturerId == id, c => c.Category, z => z.Manufacturer);
-            if (drugs.Any())
+            if (!drugs.Any())
                 return NotFound(new { success = false, message = "Not Found" });
             var DrugsDto = _mapper.Map<IEnumerable<DrugDetailsGetDto>>(drugs);
             return Ok(new { Drugs = DrugsDto });
+        }
+
+        [HttpPost]
+        [Route("AddPhoto/{id}")]
+        public async Task<IActionResult> AddPhoto(int id, IFormFile file)
+        {
+            var drug = await _unitOfWork.Drug.GetFirstOrDefaultAsync(x => x.Id == id);
+            if (drug == null)
+                return NotFound();
+
+            var result = await _photoService.AddPhotoAsync(file);
+            if (result.Error != null)
+                return BadRequest(result.Error);
+
+            drug.ImgURL = result.Url.ToString();
+            _unitOfWork.Drug.Update(drug);
+            await _unitOfWork.SaveAsync();
+
+            return Ok(drug.ImgURL);
         }
     }
 }
