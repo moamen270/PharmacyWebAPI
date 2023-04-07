@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using PharmacyWebAPI.Models.Dto;
+using PharmacyWebAPI.Utility.Services.IServices;
 
 namespace PharmacyWebAPI.Controllers
 {
@@ -9,11 +10,13 @@ namespace PharmacyWebAPI.Controllers
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
+        private readonly IPhotoService _photoService;
 
-        public CategoryController(IUnitOfWork unitOfWork, IMapper mapper)
+        public CategoryController(IUnitOfWork unitOfWork, IMapper mapper, IPhotoService photoService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _photoService = photoService;
         }
 
         [HttpGet]
@@ -96,6 +99,25 @@ namespace PharmacyWebAPI.Controllers
             _unitOfWork.Category.Update(obj);
             await _unitOfWork.SaveAsync();
             return Ok(new { success = true, message = "Category Updated Successfully", Category = obj });
+        }
+
+        [HttpPost]
+        [Route("AddPhoto/{id}")]
+        public async Task<IActionResult> AddPhoto(int id, IFormFile file)
+        {
+            var category = await _unitOfWork.Category.GetFirstOrDefaultAsync(x => x.Id == id);
+            if (category is null)
+                return NotFound();
+
+            var result = await _photoService.AddPhotoAsync(file);
+            if (result.Error != null)
+                return BadRequest(result.Error);
+
+            category.ImgURL = result.Url.ToString();
+            _unitOfWork.Category.Update(category);
+            await _unitOfWork.SaveAsync();
+
+            return Ok(category.ImgURL);
         }
     }
 }

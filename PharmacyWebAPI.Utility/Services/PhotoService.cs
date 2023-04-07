@@ -1,5 +1,5 @@
-﻿using CloudinaryDotNet;
-using CloudinaryDotNet.Actions;
+﻿using CloudinaryDotNet.Actions;
+using CloudinaryDotNet;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using PharmacyWebAPI.Utility.Services.IServices;
@@ -11,14 +11,15 @@ namespace PharmacyWebAPI.Utility.Services
     {
         private readonly Cloudinary _cloudinary;
 
-        public PhotoService(IOptions<CloudinarySetting> config)
+        public PhotoService(IOptions<CloudinarySettings> config)
         {
             var acc = new Account
-                (
-                    config.Value.CloudName,
-                    config.Value.ApiKey,
-                    config.Value.ApiKey
-                );
+            (
+                config.Value.CloudName,
+                config.Value.ApiKey,
+                config.Value.ApiSecret
+            );
+
             _cloudinary = new Cloudinary(acc);
         }
 
@@ -29,21 +30,23 @@ namespace PharmacyWebAPI.Utility.Services
             if (file.Length > 0)
             {
                 using var stream = file.OpenReadStream();
-                var uploadParams = new ImageUploadParams()
+                var uploadParams = new ImageUploadParams
                 {
-                    File = new FileDescription(file.Name, stream),
-                    Transformation = new Transformation().Height(500).Width(500).Crop("fill")
+                    File = new FileDescription(file.FileName, stream),
+                    Transformation = new Transformation().Height(500).Width(500).Crop("fill").Gravity("face"),
+                    Folder = "da-net7"
                 };
                 uploadResult = await _cloudinary.UploadAsync(uploadParams);
             }
+
             return uploadResult;
         }
 
         public async Task<DeletionResult> DeletePhotoAsync(string publicId)
         {
-            var deleteResult = new DeletionParams(publicId);
-            var result = await _cloudinary.DestroyAsync(deleteResult);
-            return result;
+            var deleteParams = new DeletionParams(publicId);
+
+            return await _cloudinary.DestroyAsync(deleteParams);
         }
     }
 }
