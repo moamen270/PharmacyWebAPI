@@ -93,7 +93,7 @@ namespace PharmacyWebAPI.DataAccess.Repository
                         ProductData = new SessionLineItemPriceDataProductDataOptions
                         {
                             Name = drug.Name,
-                            Images = new List<string> { drug.ImgURL },
+                            Images = new List<string> { drug.ImageURL },
                             Description = drug.Description
                         }
                     },
