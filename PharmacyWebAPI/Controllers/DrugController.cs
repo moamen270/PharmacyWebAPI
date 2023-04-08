@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using PharmacyWebAPI.Models;
 using PharmacyWebAPI.Models.Dto;
 using PharmacyWebAPI.Utility.Services.IServices;
 
@@ -162,16 +163,21 @@ namespace PharmacyWebAPI.Controllers
             var drug = await _unitOfWork.Drug.GetFirstOrDefaultAsync(x => x.Id == id);
             if (drug == null)
                 return NotFound();
-
+            if (!string.IsNullOrEmpty(drug.ImageId))
+            {
+                var DeleteResult = await _photoService.DeletePhotoAsync(drug.ImageId);
+                if (DeleteResult.Error is not null)
+                    return BadRequest(DeleteResult.Error);
+            }
             var result = await _photoService.AddPhotoAsync(file);
             if (result.Error != null)
                 return BadRequest(result.Error);
-
-            drug.ImgURL = result.Url.ToString();
+            drug.ImageId = result.PublicId;
+            drug.ImageURL = result.SecureUrl.AbsoluteUri;
             _unitOfWork.Drug.Update(drug);
             await _unitOfWork.SaveAsync();
 
-            return Ok(drug.ImgURL);
+            return Ok(drug.ImageURL);
         }
     }
 }

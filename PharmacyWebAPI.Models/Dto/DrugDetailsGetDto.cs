@@ -14,7 +14,8 @@ namespace PharmacyWebAPI.Models.Dto
         public PregnancyCategory PregnancyCategory { get; set; }
         public int Stock { get; set; }
         public double Price { get; set; }
-        public string ImgURL { get; set; }
+        public string ImageURL { get; set; }
+        public string ImageId { get; set; }
         public int ManufacturerId { get; set; }
         public int CategoryId { get; set; }
         public Manufacturer Manufacturer { get; set; }

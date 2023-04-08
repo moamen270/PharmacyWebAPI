@@ -14,7 +14,8 @@ namespace PharmacyWebAPI.Models
         public PregnancyCategory PregnancyCategory { get; set; } = PregnancyCategory.C;
         public int Stock { get; set; } = 20;
         public double Price { get; set; } = GenerateRandomNumber();
-        public string ImgURL { get; set; } = string.Empty;
+        public string ImageURL { get; set; } = string.Empty;
+        public string ImageId { get; set; } = string.Empty;
 
         [ForeignKey("Manufacturer")]
         public int ManufacturerId { get; set; }
