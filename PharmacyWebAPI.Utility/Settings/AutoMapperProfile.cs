@@ -25,6 +25,9 @@ namespace PharmacyWebAPI.Utility.Settings
                .ForMember(dest => dest.Drug, src => src.Ignore())
                .ForMember(dest => dest.Order, src => src.Ignore())
                .ForMember(dest => dest.OrderId, src => src.Ignore());
+
+            CreateMap<Category, CategoryDto>()
+                .ReverseMap();
         }
     }
 }

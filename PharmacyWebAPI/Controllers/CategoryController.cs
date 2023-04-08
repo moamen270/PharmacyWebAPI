@@ -24,12 +24,12 @@ namespace PharmacyWebAPI.Controllers
         [Route("GetById")]
         public async Task<IActionResult> GetById(int id)
         {
-            var drug = await _unitOfWork.Category.GetFirstOrDefaultAsync(p => p.Id == id);
-            if (drug is null)
+            var Category = await _unitOfWork.Category.GetFirstOrDefaultAsync(p => p.Id == id);
+            if (Category is null)
                 return NotFound(new { success = false, message = "Not Found" });
-            var obj = _mapper.Map<CategoryDto>(drug);
+            var obj = _mapper.Map<CategoryDto>(Category);
 
-            return Ok(new { Drug = obj });
+            return Ok(new { Category = obj });
         }
 
         [HttpGet]
