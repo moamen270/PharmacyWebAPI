@@ -9,8 +9,6 @@ namespace PharmacyWebAPI.DataAccess.Repository.IRepository
 
         void UpdateStripePaymentID(int id, string paymentItentId);
 
-        Order GenerateOrder(string userId);
-
         double GetTotalPrice(List<OrderDetail> Drugs);
 
         Task<Session> StripeSetting(Order order, List<OrderDetail> orderDetails);

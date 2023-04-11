@@ -13,8 +13,8 @@
         public DateTime OrderDate { get; set; }
 
         public double OrderTotal { get; set; }
-        public string OrderStatus { get; set; } = string.Empty;
-        public string PaymentStatus { get; set; } = string.Empty;
+        public string OrderStatus { get; set; } = "Pending";
+        public string PaymentStatus { get; set; } = "Pending";
         public string TrackingNumber { get; set; } = string.Empty;
         public string Carrier { get; set; } = string.Empty;
         public DateTime PaymentDate { get; set; }

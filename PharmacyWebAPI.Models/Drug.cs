@@ -20,10 +20,11 @@ namespace PharmacyWebAPI.Models
         [ForeignKey("Manufacturer")]
         public int ManufacturerId { get; set; }
 
+        public Manufacturer Manufacturer { get; set; }
+
         [ForeignKey("Category")]
         public int CategoryId { get; set; }
 
-        public Manufacturer Manufacturer { get; set; }
         public Category Category { get; set; }
 
         private static double GenerateRandomNumber()

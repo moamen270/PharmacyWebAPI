@@ -29,23 +29,12 @@ namespace PharmacyWebAPI.DataAccess.Repository
             }
         }
 
-        public Order GenerateOrder(string userId)
-        {
-            var order = new Order
-            {
-                UserId = userId,
-                PaymentStatus = "Pending",
-                OrderStatus = "Pending"
-            };
-            return order;
-        }
-
         public double GetTotalPrice(List<OrderDetail> Drugs)
         {
             double totalPrice = 0;
-            foreach (var d in Drugs)
+            foreach (var drug in Drugs)
             {
-                totalPrice += d.Price * d.Count;
+                totalPrice += drug.Price * drug.Count;
             }
             return totalPrice;
         }
@@ -73,8 +62,8 @@ namespace PharmacyWebAPI.DataAccess.Repository
                 PaymentMethodTypes = new List<string> { "card" },
                 LineItems = new List<SessionLineItemOptions>(),
                 Mode = "payment",
-                SuccessUrl = $"{domain}/api/Order/OrderConfirmation?id={OrderId}",
-                CancelUrl = $"{domain}/api/Order/Denied"
+                SuccessUrl = $"{domain}/Order/OrderConfirmation/{OrderId}",
+                CancelUrl = $"{domain}/Order/Denied"
             };
             return options;
         }
@@ -84,33 +73,39 @@ namespace PharmacyWebAPI.DataAccess.Repository
             foreach (var item in orderDetails)
             {
                 var drug = await _context.Drugs.FirstOrDefaultAsync(d => d.Id == item.DrugId);
-                var sessionLineItem = new SessionLineItemOptions
+                if (drug is not null)
                 {
-                    PriceData = new SessionLineItemPriceDataOptions
+                    var sessionLineItem = new SessionLineItemOptions
                     {
-                        UnitAmount = (long)(item.Price * 100), // 20.00 -> 2000
-                        Currency = "usd",
-                        ProductData = new SessionLineItemPriceDataProductDataOptions
+                        PriceData = new SessionLineItemPriceDataOptions
                         {
-                            Name = drug.Name,
-                            Images = new List<string> { drug.ImageURL },
-                            Description = drug.Description
-                        }
-                    },
-                    Quantity = item.Count
-                };
-                options.LineItems.Add(sessionLineItem);
-                drug.Stock -= item.Count;
-                _context.Drugs.Update(drug);
-                await _context.SaveChangesAsync();
+                            UnitAmount = (long)(item.Price * 100), // 20.00 -> 2000
+                            Currency = "usd",
+                            ProductData = new SessionLineItemPriceDataProductDataOptions
+                            {
+                                Name = drug.Name,
+                                Images = new List<string> { drug.ImageURL },
+                                Description = drug.Description
+                            }
+                        },
+                        Quantity = item.Count
+                    };
+                    options.LineItems.Add(sessionLineItem);
+                    drug.Stock -= item.Count;
+                    _context.Drugs.Update(drug);
+                    await _context.SaveChangesAsync();
+                }
             }
         }
 
         public void UpdateStripePaymentID(int id, string paymentItentId)
         {
             var orderFromDb = _context.Order.FirstOrDefault(u => u.Id == id);
-            orderFromDb.PaymentDate = DateTime.Now;
-            orderFromDb.PaymentIntentId = paymentItentId;
+            if (orderFromDb is not null)
+            {
+                orderFromDb.PaymentDate = DateTime.Now;
+                orderFromDb.PaymentIntentId = paymentItentId;
+            }
         }
     }
 }
