@@ -2,8 +2,10 @@
 {
     public class UserRolesDto
     {
-        public string? UserId { get; set; }
-        public string? UserName { get; set; }
-        public List<RoleDto>? Roles { get; set; }
+        [Required]
+        public string UserId { get; set; }
+
+        [Required]
+        public string Role { get; set; }
     }
 }

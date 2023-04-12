@@ -11,12 +11,14 @@ namespace PharmacyWebAPI.Controllers
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
         private readonly ISendGridEmail _sendGridEmail;
+        private readonly ITokenService _tokenService;
 
-        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager, ISendGridEmail sendGridEmail)
+        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager, ISendGridEmail sendGridEmail, ITokenService tokenService)
         {
             _userManager = userManager;
             _sendGridEmail = sendGridEmail;
             _signInManager = signInManager;
+            _tokenService = tokenService;
         }
 
         [HttpGet]
@@ -28,6 +30,21 @@ namespace PharmacyWebAPI.Controllers
         }
 
         [HttpPost]
+        [Route("Register")]
+        public async Task<IActionResult> Register(RegisterDto model)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var result = await _tokenService.RegisterAsync(model);
+
+            if (!result.IsAuthenticated)
+                return BadRequest(result.Message);
+
+            return Ok(result);
+        }
+
+        /*[HttpPost]
         [Route("Register")]
         public async Task<IActionResult> Register(RegisterDto userDto)
         {
@@ -46,30 +63,46 @@ namespace PharmacyWebAPI.Controllers
                 }
             }
             return BadRequest(new { success = false, message = " Registered Faild  ", User = userDto });
-        }
-
-        [HttpGet]
-        [Route("Login")]
-        public IActionResult GetLogin()
-        {
-            LoginDto user = new();
-            return Ok(new { User = user });
-        }
+        }*/
 
         [HttpPost]
         [Route("Login")]
-        public async Task<IActionResult> Login(LoginDto userDto)
+        public async Task<IActionResult> GetTokenAsync(LoginDto model)
         {
-            if (ModelState.IsValid)
-            {
-                var result = await _signInManager.PasswordSignInAsync(userDto.Email, userDto.Password, true, false);
-                if (result.Succeeded)
-                    return Ok(new { success = true, message = "User Login Successfully  ", User = userDto });
-                if (result.IsLockedOut)
-                    return BadRequest("Account Locked Out");
-            }
-            return BadRequest(new { success = false, message = " Login Faild  ", User = userDto });
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var result = await _tokenService.GetTokenAsync(model);
+
+            if (!result.IsAuthenticated)
+                return BadRequest(result.Message);
+
+            return Ok(result);
         }
+
+        /*
+                [HttpGet]
+                [Route("Login")]
+                public IActionResult GetLogin()
+                {
+                    LoginDto user = new();
+                    return Ok(new { User = user });
+                }
+
+                [HttpPost]
+                [Route("Login")]
+                public async Task<IActionResult> Login(LoginDto userDto)
+                {
+                    if (ModelState.IsValid)
+                    {
+                        var result = await _signInManager.PasswordSignInAsync(userDto.Email, userDto.Password, true, false);
+                        if (result.Succeeded)
+                            return Ok(new { success = true, message = "User Login Successfully  ", User = userDto });
+                        if (result.IsLockedOut)
+                            return BadRequest("Account Locked Out");
+                    }
+                    return BadRequest(new { success = false, message = " Login Faild  ", User = userDto });
+                }*/
 
         [HttpPost]
         [Route("Logout")]
@@ -132,6 +165,20 @@ namespace PharmacyWebAPI.Controllers
                 return BadRequest("Invalid Token");
             }
             return BadRequest(model);
+        }
+
+        [HttpPost("addrole")]
+        public async Task<IActionResult> AddRoleAsync([FromBody] UserRolesDto model)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var result = await _tokenService.AddRoleAsync(model);
+
+            if (!string.IsNullOrEmpty(result))
+                return BadRequest(result);
+
+            return Ok(model);
         }
     }
 }

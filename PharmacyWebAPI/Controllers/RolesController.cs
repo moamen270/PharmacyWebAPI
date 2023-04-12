@@ -1,19 +1,21 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
+using PharmacyWebAPI.DataAccess;
 using PharmacyWebAPI.Models.Dto;
 
 namespace PharmacyWebAPI.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    [Authorize(Roles = "Admin")]
     public class RolesController : ControllerBase
     {
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly ApplicationDbContext _context;
 
-        public RolesController(RoleManager<IdentityRole> roleManager)
+        public RolesController(RoleManager<IdentityRole> roleManager, ApplicationDbContext context)
         {
             _roleManager = roleManager;
+            _context = context;
         }
 
         [HttpGet]
@@ -21,6 +23,19 @@ namespace PharmacyWebAPI.Controllers
         {
             var roles = await _roleManager.Roles.ToListAsync();
             return Ok(roles);
+        }
+
+        [HttpPost]
+        [Route("Seed")]
+        public async Task<IActionResult> SeedRoles()
+        {
+            if (!_context.Roles.Any())
+            {
+                await _roleManager.CreateAsync(new IdentityRole("Admin"));
+                await _roleManager.CreateAsync(new IdentityRole("User"));
+                return Ok();
+            }
+            return NoContent();
         }
 
         [HttpPost]

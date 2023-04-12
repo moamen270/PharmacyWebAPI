@@ -5,6 +5,8 @@ namespace PharmacyWebAPI.Extensions
 {
     public class ApplicationDbInitializer
     {
+        private readonly RoleManager<IdentityRole> _roleManager;
+
         public static async Task Seed(IApplicationBuilder applicationBuilder)
         {
             using var serviceScope = applicationBuilder.ApplicationServices.CreateScope();
@@ -12,288 +14,281 @@ namespace PharmacyWebAPI.Extensions
             if (context is not null)
             {
                 await context.Database.EnsureCreatedAsync();
-
                 //Category
                 if (!context.Categories.Any())
                 {
                     await context.Categories.AddRangeAsync(new List<Category>()
-                {
-                    new Category()
                     {
-                        Name = "Pain Relief",
-                        ImageURL = "https://www.example.com/pain-relief.png"
-                    },
-                    new Category()
-                    {
-                        Name = "Cardiovascular Health",
-                        ImageURL = "https://www.example.com/cardiovascular-health.png"
-                    },
-                    new Category()
-                    {
-                        Name = "Mental Health",
-                        ImageURL = "https://www.example.com/mental-health.png"
-                    },
-                    new Category()
-                    {
-                        Name = "Antibiotics",
-                        ImageURL = "https://www.example.com/antibiotics.png"
-                    },
-                    new Category()
-                    {
-                        Name = "Digestive Health",
-                        ImageURL = "https://www.example.com/digestive-health.png"
-                    },
-                    new Category()
-                    {
-                        Name = "Allergy / Sinus Health",
-                        ImageURL = "https://www.example.com/allergy-sinus-health.png"
-                    },
-                    new Category()
-                    {
-                        Name = "Endocrine / Hormone Health",
-                        ImageURL = "https://www.example.com/endocrine-hormone-health.png"
-                    },
-                    new Category()
-                    {
-                        Name = "Respiratory Health",
-                        ImageURL = "https://www.example.com/respiratory-health.png"
-                    },
-                    new Category()
-                    {
-                        Name = "Dermatological Health",
-                        ImageURL = "https://www.example.com/dermatological-health.png"
-                    },
-                    new Category()
-                    {
-                        Name = "Women's Health",
-                        ImageURL = "https://www.example.com/womens-health.png"
-                    },
-                    new Category()
-                    {
-                        Name = "Men's Health",
-                        ImageURL = "https://www.example.com/mens-health.png"
-                    },
-                    new Category()
-                    {
-                        Name = "Oncology",
-                        ImageURL = "https://www.example.com/oncology.png"
-                    },
-                    new Category()
-                    {
-                        Name = "Pediatrics",
-                        ImageURL = "https://www.example.com/pediatrics.png"
-                    },
-                    new Category()
-                    {
-                        Name = "Immunology",
-                        ImageURL = "https://www.example.com/immunology.png"
-                    },
-                    new Category()
-                    {
-                        Name = "Musculoskeletal Health",
-                        ImageURL = "https://www.example.com/musculoskeletal-health.png"
-                    },
-                    new Category()
-                    {
-                        Name = "Addiction Treatment",
-                        ImageURL = "https://www.example.com/addiction-treatment.png"
-                    },
-                    new Category()
-                    {
-                        Name = "Ophthalmological Health",
-                        ImageURL = "https://www.example.com/ophthalmological-health.png"
-                    },
-                    new Category()
-                    {
-                        Name = "Neurological Health",
-                        ImageURL = "https://www.example.com/neurological-health.png"
-                    },
-                    new Category()
-                    {
-                        Name = "Gastrointestinal Health",
-                        ImageURL = "https://www.example.com/gastrointestinal-health.png"
-                    },
-                    new Category()
-                    {
-                        Name = "Reproductive Health",
-                        ImageURL = "https://www.example.com/reproductive-health.png"
-                    },
+                        new Category()
+                        {
+                            Name = "Pain Relief",
+                            ImageURL = "https://www.example.com/pain-relief.png"
+                        },
+                        new Category()
+                        {
+                            Name = "Cardiovascular Health",
+                            ImageURL = "https://www.example.com/cardiovascular-health.png"
+                        },
+                        new Category()
+                        {
+                            Name = "Mental Health",
+                            ImageURL = "https://www.example.com/mental-health.png"
+                        },
+                        new Category()
+                        {
+                            Name = "Antibiotics",
+                            ImageURL = "https://www.example.com/antibiotics.png"
+                        },
+                        new Category()
+                        {
+                            Name = "Digestive Health",
+                            ImageURL = "https://www.example.com/digestive-health.png"
+                        },
+                        new Category()
+                        {
+                            Name = "Allergy / Sinus Health",
+                            ImageURL = "https://www.example.com/allergy-sinus-health.png"
+                        },
+                        new Category()
+                        {
+                            Name = "Endocrine / Hormone Health",
+                            ImageURL = "https://www.example.com/endocrine-hormone-health.png"
+                        },
+                        new Category()
+                        {
+                            Name = "Respiratory Health",
+                            ImageURL = "https://www.example.com/respiratory-health.png"
+                        },
+                        new Category()
+                        {
+                            Name = "Dermatological Health",
+                            ImageURL = "https://www.example.com/dermatological-health.png"
+                        },
+                        new Category()
+                        {
+                            Name = "Women's Health",
+                            ImageURL = "https://www.example.com/womens-health.png"
+                        },
+                        new Category()
+                        {
+                            Name = "Men's Health",
+                            ImageURL = "https://www.example.com/mens-health.png"
+                        },
+                        new Category()
+                        {
+                            Name = "Oncology",
+                            ImageURL = "https://www.example.com/oncology.png"
+                        },
+                        new Category()
+                        {
+                            Name = "Pediatrics",
+                            ImageURL = "https://www.example.com/pediatrics.png"
+                        },
+                        new Category()
+                        {
+                            Name = "Immunology",
+                            ImageURL = "https://www.example.com/immunology.png"
+                        },
+                        new Category()
+                        {
+                            Name = "Musculoskeletal Health",
+                            ImageURL = "https://www.example.com/musculoskeletal-health.png"
+                        },
+                        new Category()
+                        {
+                            Name = "Addiction Treatment",
+                            ImageURL = "https://www.example.com/addiction-treatment.png"
+                        },
+                        new Category()
+                        {
+                            Name = "Ophthalmological Health",
+                            ImageURL = "https://www.example.com/ophthalmological-health.png"
+                        },
+                        new Category()
+                        {
+                            Name = "Neurological Health",
+                            ImageURL = "https://www.example.com/neurological-health.png"
+                        },
+                        new Category()
+                        {
+                            Name = "Gastrointestinal Health",
+                            ImageURL = "https://www.example.com/gastrointestinal-health.png"
+                        },
+                        new Category()
+                        {
+                            Name = "Reproductive Health",
+                            ImageURL = "https://www.example.com/reproductive-health.png"
+                        },
 
-                    new Category()
-                    {
-                        Name = "Cholesterol-Lowering Medication",
-                        ImageURL = "https://example.com/cholesterol.jpg"
-                    },
-                    new Category()
-                    {
-                        Name = "Antidiabetic Medication",
-                        ImageURL = "https://example.com/antidiabetic.jpg"
-                    },
-                    new Category()
-                    {
-                        Name = "Thyroid Hormone Replacement Medication",
-                        ImageURL = "https://example.com/thyroid.jpg"
-                    },
-                    new Category()
-                    {
-                        Name = "Proton Pump Inhibitor (PPI)",
-                        ImageURL = "https://example.com/ppi.jpg"
-                    },
+                        new Category()
+                        {
+                            Name = "Cholesterol-Lowering Medication",
+                            ImageURL = "https://example.com/cholesterol.jpg"
+                        },
+                        new Category()
+                        {
+                            Name = "Antidiabetic Medication",
+                            ImageURL = "https://example.com/antidiabetic.jpg"
+                        },
+                        new Category()
+                        {
+                            Name = "Thyroid Hormone Replacement Medication",
+                            ImageURL = "https://example.com/thyroid.jpg"
+                        },
+                        new Category()
+                        {
+                            Name = "Proton Pump Inhibitor (PPI)",
+                            ImageURL = "https://example.com/ppi.jpg"
+                        },
 
-                    new Category()
-                    {
-                        Name = "Bronchodilator",
-                        ImageURL = "https://example.com/bronchodilator.jpg"
-                    },
-                    new Category()
-                    {
-                        Name = "Analgesic and Antipyretic Medication",
-                        ImageURL = "https://example.com/analgesic.jpg"
-                    },
-                    new Category()
-                    {
-                        Name = "Selective Serotonin Reuptake Inhibitor (SSRI) Antidepressant",
-                        ImageURL = "https://example.com/ssri.jpg"
-                    },
-                    new Category()
-                    {
-                        Name = "Anticoagulant Medication",
-                        ImageURL = "https://example.com/anticoagulant.jpg"
-                    },
-                    new Category()
-                    {
-                        Name = "Nonsteroidal Anti-Inflammatory Drug (NSAID)",
-                        ImageURL = "https://example.com/anticoagulant.jpg"
-                    },
-                    new Category()
-                    {
-                        Name = "Allergy Relief",
-                        ImageURL = "https://example.com/anticoagulant.jpg"
-                    },
-                });
+                        new Category()
+                        {
+                            Name = "Bronchodilator",
+                            ImageURL = "https://example.com/bronchodilator.jpg"
+                        },
+                        new Category()
+                        {
+                            Name = "Analgesic and Antipyretic Medication",
+                            ImageURL = "https://example.com/analgesic.jpg"
+                        },
+                        new Category()
+                        {
+                            Name = "Selective Serotonin Reuptake Inhibitor (SSRI) Antidepressant",
+                            ImageURL = "https://example.com/ssri.jpg"
+                        },
+                        new Category()
+                        {
+                            Name = "Anticoagulant Medication",
+                            ImageURL = "https://example.com/anticoagulant.jpg"
+                        },
+                        new Category()
+                        {
+                            Name = "Nonsteroidal Anti-Inflammatory Drug (NSAID)",
+                            ImageURL = "https://example.com/anticoagulant.jpg"
+                        },
+                        new Category()
+                        {
+                            Name = "Allergy Relief",
+                            ImageURL = "https://example.com/anticoagulant.jpg"
+                        },
+                    });
                     context.SaveChanges();
                 }
                 //Manufacturer
                 if (!context.Manufacturers.Any())
                 {
                     context.Manufacturers.AddRange(new List<Manufacturer>()
-                {
-                    new Manufacturer()
                     {
-                        Name = "Johnson & Johnson"
-                    },
-                    new Manufacturer()
-                    {
-                        Name = "Pfizer",
-                    },
-                    new Manufacturer()
-                    {
-                        Name = "Mylan",
-                    },
-                    new Manufacturer()
-                    {
-                        Name = "Apotex",
-                    },
-                    new Manufacturer()
-                    {
-                        Name = "Eli Lilly and Company",
-                    },
-                    new Manufacturer()
-                    {
-                        Name = "Sandoz",
-                    },
-                    new Manufacturer()
-                    {
-                        Name = "Teva Pharmaceuticals USA",
-                    },
-                    new Manufacturer()
-                    {
-                        Name = "Mallinckrodt Pharmaceuticals",
-                    },
-                    new Manufacturer()
-                    {
-                        Name = "Alembic Pharmaceuticals Limited",
-                    },
-                    new Manufacturer()
-                    {
-                        Name = "Greenstone LLC",
-                    },
-                    new Manufacturer()
-                    {
-                        Name = "Bristol-Myers Squibb",
-                    },
-                    new Manufacturer()
-                    {
-                        Name = "Teva Pharmaceuticals USA",
-                    },
-                    new Manufacturer()
-                    {
-                        Name = "Watson Pharmaceuticals, Inc.",
-                    },
-                    new Manufacturer()
-                    {
-                        Name = "Ranbaxy Pharmaceuticals Inc.",
-                    },
-                    new Manufacturer()
-                    {
-                        Name = "Actavis Pharma, Inc."
-                    },
-                    new Manufacturer()
-                    {
-                        Name = "Amoxil"
-                    },
-                    new Manufacturer()
-                    {
-                        Name = "Losec"
-                    },
-                    new Manufacturer()
-                    {
-                        Name = "Levoxyl"
-                    },
-                    new Manufacturer()
-                    {
-                        Name = "Riomet"
-                    },
-                    new Manufacturer()
-                    {
-                        Name = "Zocor"
-                    },
-                    new Manufacturer()
-                    {
-                        Name = "Prinivil"
-                    },
-                    new Manufacturer()
-                    {
-                        Name = "Marevan"
-                    },
-                    new Manufacturer()
-                    {
-                        Name = "Celexa"
-                    },
-                    new Manufacturer()
-                    {
-                        Name = "Panadol"
-                    },
-                    new Manufacturer()
-                    {
-                        Name = "Proventil"
-                    },
-                    new Manufacturer()
-                    {
-                        Name = "Bayer"
-                    }
-                });
+                        new Manufacturer()
+                        {
+                            Name = "Johnson & Johnson"
+                        },
+                        new Manufacturer()
+                        {
+                            Name = "Pfizer",
+                        },
+                        new Manufacturer()
+                        {
+                            Name = "Mylan",
+                        },
+                        new Manufacturer()
+                        {
+                            Name = "Apotex",
+                        },
+                        new Manufacturer()
+                        {
+                            Name = "Eli Lilly and Company",
+                        },
+                        new Manufacturer()
+                        {
+                            Name = "Sandoz",
+                        },
+                        new Manufacturer()
+                        {
+                            Name = "Teva Pharmaceuticals USA",
+                        },
+                        new Manufacturer()
+                        {
+                            Name = "Mallinckrodt Pharmaceuticals",
+                        },
+                        new Manufacturer()
+                        {
+                            Name = "Alembic Pharmaceuticals Limited",
+                        },
+                        new Manufacturer()
+                        {
+                            Name = "Greenstone LLC",
+                        },
+                        new Manufacturer()
+                        {
+                            Name = "Bristol-Myers Squibb",
+                        },
+                        new Manufacturer()
+                        {
+                            Name = "Teva Pharmaceuticals USA",
+                        },
+                        new Manufacturer()
+                        {
+                            Name = "Watson Pharmaceuticals, Inc.",
+                        },
+                        new Manufacturer()
+                        {
+                            Name = "Ranbaxy Pharmaceuticals Inc.",
+                        },
+                        new Manufacturer()
+                        {
+                            Name = "Actavis Pharma, Inc."
+                        },
+                        new Manufacturer()
+                        {
+                            Name = "Amoxil"
+                        },
+                        new Manufacturer()
+                        {
+                            Name = "Losec"
+                        },
+                        new Manufacturer()
+                        {
+                            Name = "Levoxyl"
+                        },
+                        new Manufacturer()
+                        {
+                            Name = "Riomet"
+                        },
+                        new Manufacturer()
+                        {
+                            Name = "Zocor"
+                        },
+                        new Manufacturer()
+                        {
+                            Name = "Prinivil"
+                        },
+                        new Manufacturer()
+                        {
+                            Name = "Marevan"
+                        },
+                        new Manufacturer()
+                        {
+                            Name = "Celexa"
+                        },
+                        new Manufacturer()
+                        {
+                            Name = "Panadol"
+                        },
+                        new Manufacturer()
+                        {
+                            Name = "Proventil"
+                        },
+                        new Manufacturer()
+                        {
+                            Name = "Bayer"
+                        }
+                    });
                     context.SaveChanges();
                 }
                 //Drugs
                 if (!context.Drugs.Any())
                 {
-                    /* context.Categories.Add(new Category()
-                     {
-                         Name = "Allergy Relief",
-                         ImageURL = "https://example.com/anticoagulant.jpg"
-                     });
-                     context.SaveChanges();*/
                     context.Drugs.Add(new Drug()
                     {
                         Name = "Amoxicillin",
