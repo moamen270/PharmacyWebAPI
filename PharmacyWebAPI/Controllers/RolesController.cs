@@ -10,12 +10,10 @@ namespace PharmacyWebAPI.Controllers
     public class RolesController : ControllerBase
     {
         private readonly RoleManager<IdentityRole> _roleManager;
-        private readonly ApplicationDbContext _context;
 
-        public RolesController(RoleManager<IdentityRole> roleManager, ApplicationDbContext context)
+        public RolesController(RoleManager<IdentityRole> roleManager)
         {
             _roleManager = roleManager;
-            _context = context;
         }
 
         [HttpGet]
@@ -25,18 +23,18 @@ namespace PharmacyWebAPI.Controllers
             return Ok(roles);
         }
 
-        [HttpPost]
-        [Route("Seed")]
-        public async Task<IActionResult> SeedRoles()
-        {
-            if (!_context.Roles.Any())
-            {
-                await _roleManager.CreateAsync(new IdentityRole("Admin"));
-                await _roleManager.CreateAsync(new IdentityRole("User"));
-                return Ok();
-            }
-            return NoContent();
-        }
+        /* [HttpPost]
+         [Route("Seed")]
+         public async Task<IActionResult> SeedRoles()
+         {
+             if (!_context.Roles.Any())
+             {
+                 await _roleManager.CreateAsync(new IdentityRole("Admin"));
+                 await _roleManager.CreateAsync(new IdentityRole("User"));
+                 return Ok();
+             }
+             return NoContent();
+         }*/
 
         [HttpPost]
         public async Task<IActionResult> Add(RoleFormDto model)
