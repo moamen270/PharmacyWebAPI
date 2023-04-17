@@ -22,7 +22,7 @@ namespace PharmacyWebAPI.Controllers
         }
 
         [HttpGet]
-        [Route("id")]
+        [Route("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
             var obj = await _unitOfWork.Prescription.GetFirstOrDefaultAsync(p => p.Id == id);
@@ -66,7 +66,7 @@ namespace PharmacyWebAPI.Controllers
         }
 
         [HttpDelete]
-        [Route("Delete/id")]
+        [Route("Delete/{id}")]
         public async Task<IActionResult> Delete(int id)
         {
             var obj = await _unitOfWork.Prescription.GetFirstOrDefaultAsync(p => p.Id == id); ;

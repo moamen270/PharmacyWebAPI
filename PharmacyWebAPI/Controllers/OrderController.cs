@@ -24,7 +24,7 @@ namespace PharmacyWebAPI.Controllers
         }
 
         [HttpGet]
-        [Route("id")]
+        [Route("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
             var obj = await _unitOfWork.Order.GetFirstOrDefaultAsync(p => p.Id == id);
@@ -197,7 +197,7 @@ namespace PharmacyWebAPI.Controllers
            }*/
 
         [HttpDelete]
-        [Route("Delete/id")]
+        [Route("Delete/{id}")]
         public async Task<IActionResult> Delete(int id)
         {
             var obj = await _unitOfWork.Order.GetFirstOrDefaultAsync(u => u.Id == id);
@@ -210,7 +210,7 @@ namespace PharmacyWebAPI.Controllers
         }
 
         [HttpGet]
-        [Route("OrderConfirmation/id")]
+        [Route("OrderConfirmation/{id}")]
         public async Task<IActionResult> OrderConfirmation(int id)
         {
             Order order = await _unitOfWork.Order.GetFirstOrDefaultAsync(u => u.Id == id);

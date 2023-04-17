@@ -21,7 +21,7 @@ namespace PharmacyWebAPI.Controllers
         }
 
         [HttpGet]
-        [Route("id")]
+        [Route("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
             var Category = await _unitOfWork.Category.GetFirstOrDefaultAsync(p => p.Id == id);
@@ -36,7 +36,7 @@ namespace PharmacyWebAPI.Controllers
         public async Task<IActionResult> Index()
         {
             IEnumerable<Category> obj = await _unitOfWork.Category.GetAllAsync();
-            return Ok(obj);
+            return Ok(new { categories = obj });
         }
 
         [HttpGet]
@@ -62,7 +62,7 @@ namespace PharmacyWebAPI.Controllers
         }
 
         [HttpDelete]
-        [Route("Delete/id")]
+        [Route("Delete/{id}")]
         public async Task<IActionResult> Delete(int id)
         {
             var Category = await _unitOfWork.Category.GetFirstOrDefaultAsync(p => p.Id == id);
@@ -102,8 +102,19 @@ namespace PharmacyWebAPI.Controllers
             return Ok(new { success = true, message = "Category Updated Successfully", Category = obj });
         }
 
+        [HttpGet]
+        [Route("GetDrugs/{id}")]
+        public async Task<IActionResult> GetDrugs(int id)
+        {
+            var drugs = await _unitOfWork.Drug.GetAllFilterAsync(x => x.CategoryId == id, c => c.Category, z => z.Manufacturer);
+            if (!drugs.Any())
+                return NotFound(new { success = false, message = "Not Found" });
+            var DrugsDto = _mapper.Map<IEnumerable<DrugDetailsGetDto>>(drugs);
+            return Ok(new { Drugs = DrugsDto });
+        }
+
         [HttpPost]
-        [Route("AddPhoto/id")]
+        [Route("AddPhoto/{id}")]
         public async Task<IActionResult> AddPhoto(int id, IFormFile file)
         {
             var category = await _unitOfWork.Category.GetFirstOrDefaultAsync(x => x.Id == id);

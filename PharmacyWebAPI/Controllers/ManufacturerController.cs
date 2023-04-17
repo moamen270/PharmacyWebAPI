@@ -1,18 +1,23 @@
-﻿namespace PharmacyWebAPI.Controllers
+﻿using AutoMapper;
+using PharmacyWebAPI.Models.Dto;
+
+namespace PharmacyWebAPI.Controllers
 {
     [ApiController]
     [Route("[controller]")]
     public class ManufacturerController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IMapper _mapper;
 
-        public ManufacturerController(IUnitOfWork unitOfWork)
+        public ManufacturerController(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
+            _mapper = mapper;
         }
 
         [HttpGet]
-        [Route("id")]
+        [Route("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
             Manufacturer obj = await _unitOfWork.Manufacturer.GetFirstOrDefaultAsync(p => p.Id == id);
@@ -50,7 +55,7 @@
         }
 
         [HttpDelete]
-        [Route("Delete/id")]
+        [Route("Delete/{id}")]
         public async Task<IActionResult> Delete(int id)
         {
             var brand = await _unitOfWork.Manufacturer.GetFirstOrDefaultAsync(p => p.Id == id);
@@ -74,6 +79,17 @@
             _unitOfWork.Manufacturer.Update(obj);
             await _unitOfWork.SaveAsync();
             return Ok(new { success = true, message = "Brand Updated Successfully" });
+        }
+
+        [HttpGet]
+        [Route("GetDrugs/{id}")]
+        public async Task<IActionResult> GetDrugs(int id)
+        {
+            var drugs = await _unitOfWork.Drug.GetAllFilterAsync(x => x.ManufacturerId == id, c => c.Category, z => z.Manufacturer);
+            if (!drugs.Any())
+                return NotFound(new { success = false, message = "Not Found" });
+            var DrugsDto = _mapper.Map<IEnumerable<DrugDetailsGetDto>>(drugs);
+            return Ok(new { Drugs = DrugsDto });
         }
     }
 }
