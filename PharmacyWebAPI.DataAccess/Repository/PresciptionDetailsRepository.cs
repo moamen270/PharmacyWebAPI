@@ -1,4 +1,5 @@
-﻿using PharmacyWebAPI.Models.Dto;
+﻿using PharmacyWebAPI.Models;
+using PharmacyWebAPI.Models.Dto;
 
 namespace PharmacyWebAPI.DataAccess.Repository
 {
@@ -11,15 +12,27 @@ namespace PharmacyWebAPI.DataAccess.Repository
             _context = context;
         }
 
+        public async Task SetPresciptionId(int PresciptionId, List<PrescriptionDetails> details)
+        {
+            foreach (var d in details)
+            {
+                d.PrescriptionId = PresciptionId;
+            }
+            await _context.PrescriptionDetail.AddRangeAsync(details);
+            await _context.SaveChangesAsync();
+        }
+
         public List<OrderDetailsDto> PrescriptionDetailsToOrderDetails(List<PrescriptionDetails> prescriptionDetails)
         {
             var details = new List<OrderDetailsDto>();
             foreach (var item in prescriptionDetails)
             {
+                var drug = _context.Drugs.Find(item.DrugId);
                 details.Add(new OrderDetailsDto
                 {
                     Count = 1,
                     DrugId = item.DrugId,
+                    Price = drug.Price
                 });
             }
             return details;

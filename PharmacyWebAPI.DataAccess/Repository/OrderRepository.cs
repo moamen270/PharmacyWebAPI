@@ -85,7 +85,7 @@ namespace PharmacyWebAPI.DataAccess.Repository
                             {
                                 Name = drug.Name,
                                 Images = new List<string> { drug.ImageURL },
-                                Description = drug.Description
+                                Description = drug.Description,
                             }
                         },
                         Quantity = item.Count

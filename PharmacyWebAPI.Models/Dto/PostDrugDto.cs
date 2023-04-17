@@ -12,9 +12,7 @@ namespace PharmacyWebAPI.Models.Dto
         public string Contraindications { get; set; }
         public string Description { get; set; }
         public PregnancyCategory PregnancyCategory { get; set; }
-        public int Stock { get; set; } = 20;
         public double Price { get; set; }
-        public string ImgURL { get; set; }
         public int ManufacturerId { get; set; }
         public int CategoryId { get; set; }
 

@@ -21,7 +21,7 @@ namespace PharmacyWebAPI.Controllers
         }
 
         [HttpGet]
-        [Route("GetById")]
+        [Route("id")]
         public async Task<IActionResult> GetById(int id)
         {
             var Category = await _unitOfWork.Category.GetFirstOrDefaultAsync(p => p.Id == id);
@@ -36,7 +36,7 @@ namespace PharmacyWebAPI.Controllers
         public async Task<IActionResult> Index()
         {
             IEnumerable<Category> obj = await _unitOfWork.Category.GetAllAsync();
-            return Ok(new { Categories = obj });
+            return Ok(obj);
         }
 
         [HttpGet]
@@ -62,7 +62,7 @@ namespace PharmacyWebAPI.Controllers
         }
 
         [HttpDelete]
-        [Route("Delete/{id}")]
+        [Route("Delete/id")]
         public async Task<IActionResult> Delete(int id)
         {
             var Category = await _unitOfWork.Category.GetFirstOrDefaultAsync(p => p.Id == id);
@@ -103,7 +103,7 @@ namespace PharmacyWebAPI.Controllers
         }
 
         [HttpPost]
-        [Route("AddPhoto/{id}")]
+        [Route("AddPhoto/id")]
         public async Task<IActionResult> AddPhoto(int id, IFormFile file)
         {
             var category = await _unitOfWork.Category.GetFirstOrDefaultAsync(x => x.Id == id);

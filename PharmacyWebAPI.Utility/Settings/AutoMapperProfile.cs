@@ -28,6 +28,12 @@ namespace PharmacyWebAPI.Utility.Settings
 
             CreateMap<Category, CategoryDto>()
                 .ReverseMap();
+
+            CreateMap<PrescriptionDetails, PrescriptionDetailsDto>()
+               .ReverseMap()
+               .ForMember(dest => dest.PrescriptionId, src => src.Ignore())
+               .ForMember(dest => dest.Drug, src => src.Ignore())
+               .ForMember(dest => dest.Prescription, src => src.Ignore());
         }
     }
 }

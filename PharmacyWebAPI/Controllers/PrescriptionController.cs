@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using Newtonsoft.Json;
+using PharmacyWebAPI.Models;
 using PharmacyWebAPI.Models.Dto;
+using System.Text;
 
 namespace PharmacyWebAPI.Controllers
 {
@@ -20,7 +22,7 @@ namespace PharmacyWebAPI.Controllers
         }
 
         [HttpGet]
-        [Route("GetById")]
+        [Route("id")]
         public async Task<IActionResult> GetById(int id)
         {
             var obj = await _unitOfWork.Prescription.GetFirstOrDefaultAsync(p => p.Id == id);
@@ -39,65 +41,32 @@ namespace PharmacyWebAPI.Controllers
             return Ok(obj);
         }
 
-        [HttpGet]
-        [Route("QuickCreate")]
-        public async Task<IActionResult> QuickCreate()
-        {
-            var user = (await _userManager.GetUserAsync(User));
-            if (user == null)
-                return Unauthorized();
-            var prescription = new Prescription
-            {
-                DoctorId = user.Id,
-            };
-            return Ok(new { Prescription = prescription });
-        }
-
-        [HttpPost]
-        [Route("QuickCreate")]
-        public async Task<IActionResult> QuickCreate(string patientId)
-        {
-            await _unitOfWork.User.GetFirstOrDefaultAsync(p => p.Id == patientId);
-            if (User == null)
-                return NotFound();
-            await _unitOfWork.Prescription.AddAsync(new Prescription
-            {
-                PatientId = patientId,
-            });
-            await _unitOfWork.SaveAsync();
-            return Ok(new { success = true, message = "Product Created Successfully" });
-        }
-
-        [HttpGet]
-        [Route("Create")]
-        public IActionResult Create()
-        {
-            return Ok(new PrescriptionDto());
-        }
-
         [HttpPost]
         [Route("Create")]
-        public async Task<IActionResult> Create(PrescriptionDto viewModel)
-        {
+        public async Task<IActionResult> Create(IEnumerable<PrescriptionDetailsDto> Drugs)
+        {/*
             if (!ModelState.IsValid)
             {
-                return BadRequest(viewModel);
+                return BadRequest(drugs);
             }
             if (await _userManager.FindByIdAsync(viewModel.PatientId) == null)
             {
-                return BadRequest(viewModel);
+                return BadRequest(drugs);
             }
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
-                return Unauthorized(viewModel);
-            viewModel.DoctorId = user.Id;
-            await _unitOfWork.Prescription.AddAsync(_mapper.Map<Prescription>(viewModel));
+                return Unauthorized(drugs);*/
+
+            var prescription = new Prescription() { DoctorId = "2357bf53-13ec-4199-bd9a-54331c86622e", PatientId = "2357bf53-13ec-4199-bd9a-54331c86622e", };
+            await _unitOfWork.Prescription.AddAsync(prescription);
             await _unitOfWork.SaveAsync();
-            return Ok(new { success = true, message = "Prescription Created Successfully", viewModel });
+            var drugs = _mapper.Map<IEnumerable<PrescriptionDetails>>(Drugs).ToList();
+            await _unitOfWork.PrescriptionDetails.SetPresciptionId(prescription.Id, drugs);
+            return Ok(new { success = true, message = "Prescription Created Successfully", drugs });
         }
 
         [HttpDelete]
-        [Route("Delete/{id}")]
+        [Route("Delete/id")]
         public async Task<IActionResult> Delete(int id)
         {
             var obj = await _unitOfWork.Prescription.GetFirstOrDefaultAsync(p => p.Id == id); ;
@@ -125,24 +94,67 @@ namespace PharmacyWebAPI.Controllers
         }
 
         [HttpPost]
-        [Route("Dispensing ")]
-        public async Task<IActionResult> Dispensing(int prescriptionId)
+        [Route("Dispensing/id")]
+        public async Task<IActionResult> Dispensing(int id)
         {
-            if (!ModelState.IsValid)
+            /*if (!ModelState.IsValid)
                 return BadRequest(new { State = ModelState, PrescriptionId = prescriptionId });
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
                 return Unauthorized();
             var prescription = await _unitOfWork.Prescription.GetFirstOrDefaultAsync(p => p.Id == prescriptionId);
             if (prescription == null)
-                return NotFound();
+                return NotFound();*/
 
-            var prescriptionDetails = await _unitOfWork.PrescriptionDetails.GetAllFilterAsync(p => p.PrescriptionId == prescription.Id);
-            var orderDetails = _unitOfWork.PrescriptionDetails.PrescriptionDetailsToOrderDetails(prescriptionDetails.ToList());
+            var prescriptionDetails = await _unitOfWork.PrescriptionDetails.GetAllFilterAsync(p => p.PrescriptionId == id);
+            var orderDetailsDto = _unitOfWork.PrescriptionDetails.PrescriptionDetailsToOrderDetails(prescriptionDetails.ToList());
+            /*  using (var client = new HttpClient())
+              {
+                  var url = "https://localhost:44332/Order/Checkout"; // replace with the actual API endpoint
 
-            //var ss = JsonConvert.SerializeObject(orderDetails);
+                  // create an object to hold the data you want to submit
+                  var data = orderDetailsdto;
 
-            return Ok(new { success = true, });
+                  // convert the data to a JSON string
+                  var json = Newtonsoft.Json.JsonConvert.SerializeObject(data);
+
+                  // create a StringContent object from the JSON string
+                  var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                  // send the POST request and wait for the response
+                  var response = await client.PostAsync(url, content);
+
+                  // read the response content as a string
+                  var responseString = await response.Content.ReadAsStringAsync();
+
+                  // print the response to the console
+                  Console.WriteLine(responseString);
+              }*/
+            var orderDetails = _mapper.Map<IEnumerable<OrderDetail>>(orderDetailsDto).ToList();
+            var order = new Order { UserId = "2357bf53-13ec-4199-bd9a-54331c86622e" /*user.Id*/ };
+            await _unitOfWork.Order.AddAsync(order);
+            await _unitOfWork.SaveAsync();
+            order.OrderTotal = _unitOfWork.Order.GetTotalPrice(orderDetails);
+            await _unitOfWork.OrderDetail.SetOrderId(order.Id, orderDetails);
+            var session = await _unitOfWork.Order.StripeSetting(order, orderDetails);
+            Response.Headers.Add("Location", session.Url);
+            return new StatusCodeResult(303);
+            /*
+                        var httpClient = new HttpClient();
+                        var drugs = orderDetailsDto; // populate with order details
+                        var jsonContent = Newtonsoft.Json.JsonConvert.SerializeObject(drugs);
+                        var httpContent = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+
+                        var response = await httpClient.PostAsync("https://localhost:44332/Order/Checkout", httpContent);
+
+                        if (response.IsSuccessStatusCode)
+                        {
+                            return Ok(response);
+                        }
+                        else
+                        {
+                            return BadRequest(response);
+                        }*/
         }
     }
 }

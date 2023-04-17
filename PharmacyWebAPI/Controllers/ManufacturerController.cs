@@ -12,7 +12,7 @@
         }
 
         [HttpGet]
-        [Route("GetById")]
+        [Route("id")]
         public async Task<IActionResult> GetById(int id)
         {
             Manufacturer obj = await _unitOfWork.Manufacturer.GetFirstOrDefaultAsync(p => p.Id == id);
@@ -50,7 +50,7 @@
         }
 
         [HttpDelete]
-        [Route("Delete/{id}")]
+        [Route("Delete/id")]
         public async Task<IActionResult> Delete(int id)
         {
             var brand = await _unitOfWork.Manufacturer.GetFirstOrDefaultAsync(p => p.Id == id);

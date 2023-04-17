@@ -10,14 +10,6 @@ namespace PharmacyWebAPI.Models.Dto
         public int Dose { get; set; }
         public int Dosage { get; set; }
         public bool BeforeAfterMeal { get; set; }
-        public int PrescriptionId { get; set; }
-
-        [ValidateNever]
-        public Prescription Prescription { get; set; }
-
         public int DrugId { get; set; }
-
-        [ValidateNever]
-        public Drug Drug { get; set; }
     }
 }
