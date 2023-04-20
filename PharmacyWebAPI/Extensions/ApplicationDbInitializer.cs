@@ -834,7 +834,6 @@ namespace PharmacyWebAPI.Extensions
                         CategoryId = context.Categories.FirstOrDefault(x => x.Name == "Antibiotics").Id,
                         ManufacturerId = context.Manufacturers.FirstOrDefault(x => x.Name == "Ranbaxy Pharmaceuticals Inc.").Id,
                     });
-
                     context.Add(new Drug
                     {
                         Name = "RespiClear ",
@@ -858,7 +857,8 @@ namespace PharmacyWebAPI.Extensions
                         Description = "BreathEase is a substance, natural or synthetic, that is used to treat, prevent, or diagnose a medical condition or disease in humans or animals, prescribed by a licensed healthcare provider and dispensed by a licensed pharmacist.",
                         DosageStrength = "500mg",
                         SideEffects = "dizziness, headache, cough",
-                    }); context.Add(new Drug
+                    });
+                    context.Add(new Drug
                     {
                         Name = "DermaGlow",
                         CategoryId = 9,
@@ -869,7 +869,8 @@ namespace PharmacyWebAPI.Extensions
                         Description = "DermaGlow is a substance, natural or synthetic, that is used to treat, prevent, or diagnose a medical condition or disease in humans or animals, prescribed by a licensed healthcare provider and dispensed by a licensed pharmacist.",
                         DosageStrength = "500mg",
                         SideEffects = "dizziness, headache, cough",
-                    }); context.Add(new Drug
+                    });
+                    context.Add(new Drug
                     {
                         Name = "SkinSoothe ",
                         CategoryId = 9,
@@ -880,7 +881,8 @@ namespace PharmacyWebAPI.Extensions
                         Description = "SkinSoothe is a substance, natural or synthetic, that is used to treat, prevent, or diagnose a medical condition or disease in humans or animals, prescribed by a licensed healthcare provider and dispensed by a licensed pharmacist.",
                         DosageStrength = "500mg",
                         SideEffects = "dizziness, headache, cough",
-                    }); context.Add(new Drug
+                    });
+                    context.Add(new Drug
                     {
                         Name = "FemEase",
                         CategoryId = 10,
@@ -891,7 +893,8 @@ namespace PharmacyWebAPI.Extensions
                         Description = "FemEase is a substance, natural or synthetic, that is used to treat, prevent, or diagnose a medical condition or disease in humans or animals, prescribed by a licensed healthcare provider and dispensed by a licensed pharmacist.",
                         DosageStrength = "500mg",
                         SideEffects = "dizziness, headache, cough",
-                    }); context.Add(new Drug
+                    });
+                    context.Add(new Drug
                     {
                         Name = "BellaFemme",
                         CategoryId = 10,
@@ -902,7 +905,8 @@ namespace PharmacyWebAPI.Extensions
                         Description = "BellaFemme is a substance, natural or synthetic, that is used to treat, prevent, or diagnose a medical condition or disease in humans or animals, prescribed by a licensed healthcare provider and dispensed by a licensed pharmacist.",
                         DosageStrength = "500mg",
                         SideEffects = "dizziness, headache, cough",
-                    }); context.Add(new Drug
+                    });
+                    context.Add(new Drug
                     {
                         Name = "OncoGuard",
                         CategoryId = 12,
@@ -913,7 +917,8 @@ namespace PharmacyWebAPI.Extensions
                         Description = "OncoGuard is a substance, natural or synthetic, that is used to treat, prevent, or diagnose a medical condition or disease in humans or animals, prescribed by a licensed healthcare provider and dispensed by a licensed pharmacist.",
                         DosageStrength = "500mg",
                         SideEffects = "dizziness, headache, cough",
-                    }); context.Add(new Drug
+                    });
+                    context.Add(new Drug
                     {
                         Name = "TumorStop",
                         CategoryId = 12,
@@ -924,7 +929,8 @@ namespace PharmacyWebAPI.Extensions
                         Description = "TumorStop is a substance, natural or synthetic, that is used to treat, prevent, or diagnose a medical condition or disease in humans or animals, prescribed by a licensed healthcare provider and dispensed by a licensed pharmacist.",
                         DosageStrength = "500mg",
                         SideEffects = "dizziness, headache, cough",
-                    }); context.Add(new Drug
+                    });
+                    context.Add(new Drug
                     {
                         Name = "Pediatrex",
                         CategoryId = 13,
@@ -935,7 +941,8 @@ namespace PharmacyWebAPI.Extensions
                         Description = "Pediatrex is a substance, natural or synthetic, that is used to treat, prevent, or diagnose a medical condition or disease in humans or animals, prescribed by a licensed healthcare provider and dispensed by a licensed pharmacist.",
                         DosageStrength = "500mg",
                         SideEffects = "dizziness, headache, cough",
-                    }); context.Add(new Drug
+                    });
+                    context.Add(new Drug
                     {
                         Name = "Kidz Care",
                         CategoryId = 13,
@@ -946,7 +953,8 @@ namespace PharmacyWebAPI.Extensions
                         Description = "Kidz Care is a substance, natural or synthetic, that is used to treat, prevent, or diagnose a medical condition or disease in humans or animals, prescribed by a licensed healthcare provider and dispensed by a licensed pharmacist.",
                         DosageStrength = "500mg",
                         SideEffects = "dizziness, headache, cough",
-                    }); context.Add(new Drug
+                    });
+                    context.Add(new Drug
                     {
                         Name = "ImmunoShield",
                         CategoryId = 14,
@@ -957,7 +965,8 @@ namespace PharmacyWebAPI.Extensions
                         Description = "ImmunoShield is a substance, natural or synthetic, that is used to treat, prevent, or diagnose a medical condition or disease in humans or animals, prescribed by a licensed healthcare provider and dispensed by a licensed pharmacist.",
                         DosageStrength = "500mg",
                         SideEffects = "dizziness, headache, cough",
-                    }); context.Add(new Drug
+                    });
+                    context.Add(new Drug
                     {
                         Name = "Immunotrex",
                         CategoryId = 14,
@@ -968,7 +977,8 @@ namespace PharmacyWebAPI.Extensions
                         Description = "Immunotrex is a substance, natural or synthetic, that is used to treat, prevent, or diagnose a medical condition or disease in humans or animals, prescribed by a licensed healthcare provider and dispensed by a licensed pharmacist.",
                         DosageStrength = "500mg",
                         SideEffects = "dizziness, headache, cough",
-                    }); context.Add(new Drug
+                    });
+                    context.Add(new Drug
                     {
                         Name = "FlexiRelief",
                         CategoryId = 15,
@@ -979,7 +989,8 @@ namespace PharmacyWebAPI.Extensions
                         Description = "FlexiRelief is a substance, natural or synthetic, that is used to treat, prevent, or diagnose a medical condition or disease in humans or animals, prescribed by a licensed healthcare provider and dispensed by a licensed pharmacist.",
                         DosageStrength = "500mg",
                         SideEffects = "dizziness, headache, cough",
-                    }); context.Add(new Drug
+                    });
+                    context.Add(new Drug
                     {
                         Name = "BoneEase",
                         CategoryId = 15,
@@ -990,7 +1001,8 @@ namespace PharmacyWebAPI.Extensions
                         Description = "BoneEase is a substance, natural or synthetic, that is used to treat, prevent, or diagnose a medical condition or disease in humans or animals, prescribed by a licensed healthcare provider and dispensed by a licensed pharmacist.",
                         DosageStrength = "500mg",
                         SideEffects = "dizziness, headache, cough",
-                    }); context.Add(new Drug
+                    });
+                    context.Add(new Drug
                     {
                         Name = "SoberGuard ",
                         CategoryId = 16,
@@ -1001,7 +1013,8 @@ namespace PharmacyWebAPI.Extensions
                         Description = "SoberGuard is a substance, natural or synthetic, that is used to treat, prevent, or diagnose a medical condition or disease in humans or animals, prescribed by a licensed healthcare provider and dispensed by a licensed pharmacist.",
                         DosageStrength = "500mg",
                         SideEffects = "dizziness, headache, cough",
-                    }); context.Add(new Drug
+                    });
+                    context.Add(new Drug
                     {
                         Name = "AddictStop ",
                         CategoryId = 16,
@@ -1012,7 +1025,8 @@ namespace PharmacyWebAPI.Extensions
                         Description = "AddictStop is a substance, natural or synthetic, that is used to treat, prevent, or diagnose a medical condition or disease in humans or animals, prescribed by a licensed healthcare provider and dispensed by a licensed pharmacist.",
                         DosageStrength = "500mg",
                         SideEffects = "dizziness, headache, cough",
-                    }); context.Add(new Drug
+                    });
+                    context.Add(new Drug
                     {
                         Name = "Eye Clear",
                         CategoryId = 17,
@@ -1023,7 +1037,8 @@ namespace PharmacyWebAPI.Extensions
                         Description = "Eye Clear is a substance, natural or synthetic, that is used to treat, prevent, or diagnose a medical condition or disease in humans or animals, prescribed by a licensed healthcare provider and dispensed by a licensed pharmacist.",
                         DosageStrength = "500mg",
                         SideEffects = "dizziness, headache, cough",
-                    }); context.Add(new Drug
+                    });
+                    context.Add(new Drug
                     {
                         Name = "Visio Guard ",
                         CategoryId = 17,
@@ -1034,7 +1049,8 @@ namespace PharmacyWebAPI.Extensions
                         Description = "Visio Guard is a substance, natural or synthetic, that is used to treat, prevent, or diagnose a medical condition or disease in humans or animals, prescribed by a licensed healthcare provider and dispensed by a licensed pharmacist.",
                         DosageStrength = "500mg",
                         SideEffects = "dizziness, headache, cough",
-                    }); context.Add(new Drug
+                    });
+                    context.Add(new Drug
                     {
                         Name = "Neuro Shield",
                         CategoryId = 18,
@@ -1045,7 +1061,8 @@ namespace PharmacyWebAPI.Extensions
                         Description = "Neuro Shield is a substance, natural or synthetic, that is used to treat, prevent, or diagnose a medical condition or disease in humans or animals, prescribed by a licensed healthcare provider and dispensed by a licensed pharmacist.",
                         DosageStrength = "500mg",
                         SideEffects = "dizziness, headache, cough",
-                    }); context.Add(new Drug
+                    });
+                    context.Add(new Drug
                     {
                         Name = "Brain Ease",
                         CategoryId = 18,
@@ -1056,7 +1073,8 @@ namespace PharmacyWebAPI.Extensions
                         Description = "Brain Ease is a substance, natural or synthetic, that is used to treat, prevent, or diagnose a medical condition or disease in humans or animals, prescribed by a licensed healthcare provider and dispensed by a licensed pharmacist.",
                         DosageStrength = "500mg",
                         SideEffects = "dizziness, headache, cough",
-                    }); context.Add(new Drug
+                    });
+                    context.Add(new Drug
                     {
                         Name = "Gastro Guard",
                         CategoryId = 19,
@@ -1067,7 +1085,8 @@ namespace PharmacyWebAPI.Extensions
                         Description = "Gastro Guard is a substance, natural or synthetic, that is used to treat, prevent, or diagnose a medical condition or disease in humans or animals, prescribed by a licensed healthcare provider and dispensed by a licensed pharmacist.",
                         DosageStrength = "500mg",
                         SideEffects = "dizziness, headache, cough",
-                    }); context.Add(new Drug
+                    });
+                    context.Add(new Drug
                     {
                         Name = "DigestiEase",
                         CategoryId = 19,
@@ -1078,7 +1097,8 @@ namespace PharmacyWebAPI.Extensions
                         Description = "DigestiEase is a substance, natural or synthetic, that is used to treat, prevent, or diagnose a medical condition or disease in humans or animals, prescribed by a licensed healthcare provider and dispensed by a licensed pharmacist.",
                         DosageStrength = "500mg",
                         SideEffects = "dizziness, headache, cough",
-                    }); context.Add(new Drug
+                    });
+                    context.Add(new Drug
                     {
                         Name = "ReproCare",
                         CategoryId = 20,
@@ -1089,7 +1109,8 @@ namespace PharmacyWebAPI.Extensions
                         Description = "ReproCare is a substance, natural or synthetic, that is used to treat, prevent, or diagnose a medical condition or disease in humans or animals, prescribed by a licensed healthcare provider and dispensed by a licensed pharmacist.",
                         DosageStrength = "500mg",
                         SideEffects = "dizziness, headache, cough",
-                    }); context.Add(new Drug
+                    });
+                    context.Add(new Drug
                     {
                         Name = "FertiBoost",
                         CategoryId = 20,

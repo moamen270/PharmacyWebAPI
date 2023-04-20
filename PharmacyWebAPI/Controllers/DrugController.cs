@@ -24,7 +24,7 @@ namespace PharmacyWebAPI.Controllers
         [Route("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
-            var drug = await _unitOfWork.Drug.GetFirstOrDefaultAsync(p => p.Id == id);
+            var drug = await _unitOfWork.Drug.GetFirstOrDefaultAsync(p => p.Id == id, c => c.Category, d => d.Manufacturer);
             if (drug is null)
                 return NotFound(new { success = false, message = "Not Found" });
             var obj = _mapper.Map<DrugDetailsGetDto>(drug);
