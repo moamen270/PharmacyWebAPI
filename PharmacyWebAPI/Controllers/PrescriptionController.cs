@@ -34,17 +34,19 @@ namespace PharmacyWebAPI.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var user = (await _userManager.GetUserAsync(User));
-            if (user == null)
-                return Unauthorized();
-            IEnumerable<Prescription> obj = await _unitOfWork.Prescription.GetAllAsync(d => d.DoctorId == user.Id, x => x.Patient);
+            /*  var user = (await _userManager.GetUserAsync(User));
+              if (user == null)
+                  return Unauthorized();*/
+            IEnumerable<Prescription> obj = await _unitOfWork.Prescription.GetAllAsync(x => x.Patient, y => y.Doctor);
+            var list = obj.Where(x => x.Doctor.Id == "9b460198-eb98-4c3d-8457-ef6976fa53d5");
             return Ok(obj);
         }
 
         [HttpPost]
         [Route("Create")]
         public async Task<IActionResult> Create(IEnumerable<PrescriptionDetailsDto> Drugs)
-        {/*
+        {
+            /*
             if (!ModelState.IsValid)
             {
                 return BadRequest(drugs);
@@ -57,7 +59,7 @@ namespace PharmacyWebAPI.Controllers
             if (user == null)
                 return Unauthorized(drugs);*/
 
-            var prescription = new Prescription() { DoctorId = "2357bf53-13ec-4199-bd9a-54331c86622e", PatientId = "2357bf53-13ec-4199-bd9a-54331c86622e", };
+            var prescription = new Prescription() { DoctorId = "9b460198-eb98-4c3d-8457-ef6976fa53d5", PatientId = "f12913db-9cfd-47fe-8969-9d07780b6263", };
             await _unitOfWork.Prescription.AddAsync(prescription);
             await _unitOfWork.SaveAsync();
             var drugs = _mapper.Map<IEnumerable<PrescriptionDetails>>(Drugs).ToList();

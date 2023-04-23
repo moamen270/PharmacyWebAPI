@@ -91,5 +91,14 @@ namespace PharmacyWebAPI.Controllers
             var DrugsDto = _mapper.Map<IEnumerable<DrugDetailsGetDto>>(drugs);
             return Ok(new { Drugs = DrugsDto });
         }
+
+        /* [HttpPost]
+         [Route("range")]
+         public async Task<IActionResult> range(List<Manufacturer> drugs)
+         {
+             await _unitOfWork.Manufacturer.AddRangeAsync(drugs);
+             await _unitOfWork.SaveAsync();
+             return Ok(new { success = true, message = "Drug Created Successfully", Drug = drugs });
+         }*/
     }
 }

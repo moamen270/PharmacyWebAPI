@@ -1,5 +1,6 @@
 using AutoMapper;
 using PharmacyWebAPI.Models.Dto;
+using PharmacyWebAPI.Utility.Services;
 using PharmacyWebAPI.Utility.Services.IServices;
 
 namespace PharmacyWebAPI.Controllers

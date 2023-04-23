@@ -56,14 +56,14 @@ namespace PharmacyWebAPI.DataAccess.Repository
 
         public SessionCreateOptions GenerateOptions(int OrderId)
         {
-            var domain = "https://localhost:44332";
+            var domain = "http://127.0.0.1:5500";
             var options = new SessionCreateOptions
             {
                 PaymentMethodTypes = new List<string> { "card" },
                 LineItems = new List<SessionLineItemOptions>(),
                 Mode = "payment",
-                SuccessUrl = $"{domain}/Order/OrderConfirmation/{OrderId}",
-                CancelUrl = $"{domain}/Order/Denied"
+                SuccessUrl = $"{domain}/Confirm.html?id={OrderId}",
+                CancelUrl = $"{domain}/deny.html?id={OrderId}"
             };
             return options;
         }
