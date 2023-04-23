@@ -60,7 +60,7 @@ namespace PharmacyWebAPI.Controllers
 
         [HttpPost]
         [Route("Checkout")]
-        public async Task<IActionResult> Checkout(/*IEnumerable<OrderDetail> Drugs*/)
+        public async Task<IActionResult> Checkout(/*IEnumerable<OrderDetail> Drugs*/[FromForm] ResponseURLsDto URLs)
         {
             /*if (!ModelState.IsValid)
             {
@@ -99,14 +99,14 @@ namespace PharmacyWebAPI.Controllers
             await _unitOfWork.SaveAsync();
             order.OrderTotal = _unitOfWork.Order.GetTotalPrice(orderDetails);
             await _unitOfWork.OrderDetail.SetOrderId(order.Id, orderDetails);
-            var session = await _unitOfWork.Order.StripeSetting(order, orderDetails);
+            var session = await _unitOfWork.Order.StripeSetting(order, orderDetails, URLs);
             Response.Headers.Add("Location", session.Url);
             return new StatusCodeResult(303);
         }
 
         [HttpPost]
         [Route("Checkout2")]
-        public async Task<IActionResult> Checkout2([FromForm] List<OrderDetailsDto> Drugs)
+        public async Task<IActionResult> Checkout2([FromForm] List<OrderDetailsDto> Drugs, [FromForm] ResponseURLsDto URLs)
         {
             /*if (!ModelState.IsValid)
             {
@@ -124,7 +124,7 @@ namespace PharmacyWebAPI.Controllers
             await _unitOfWork.SaveAsync();
             order.OrderTotal = _unitOfWork.Order.GetTotalPrice(orderDetails);
             await _unitOfWork.OrderDetail.SetOrderId(order.Id, orderDetails);
-            var session = await _unitOfWork.Order.StripeSetting(order, orderDetails);
+            var session = await _unitOfWork.Order.StripeSetting(order, orderDetails, URLs);
             Response.Headers.Add("Location", session.Url);
             return new StatusCodeResult(303);
         }

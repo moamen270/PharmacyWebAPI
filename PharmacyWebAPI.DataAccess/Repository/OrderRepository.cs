@@ -39,9 +39,9 @@ namespace PharmacyWebAPI.DataAccess.Repository
             return totalPrice;
         }
 
-        public async Task<Session> StripeSetting(Order order, List<OrderDetail> orderDetails)
+        public async Task<Session> StripeSetting(Order order, List<OrderDetail> orderDetails, ResponseURLsDto URLs)
         {
-            var options = GenerateOptions(order.Id);
+            var options = GenerateOptions(order.Id, URLs);
             await SetOptionsValues(options, orderDetails);
 
             var session = await new SessionService().CreateAsync(options);
@@ -54,16 +54,15 @@ namespace PharmacyWebAPI.DataAccess.Repository
             return session;
         }
 
-        public SessionCreateOptions GenerateOptions(int OrderId)
+        public SessionCreateOptions GenerateOptions(int OrderId, ResponseURLsDto URLs)
         {
-            var domain = "http://127.0.0.1:5500";
             var options = new SessionCreateOptions
             {
                 PaymentMethodTypes = new List<string> { "card" },
                 LineItems = new List<SessionLineItemOptions>(),
                 Mode = "payment",
-                SuccessUrl = $"{domain}/Confirm.html?id={OrderId}",
-                CancelUrl = $"{domain}/deny.html?id={OrderId}"
+                SuccessUrl = $"{URLs.DomainName}/{URLs.SuccessUrl}{OrderId}",
+                CancelUrl = $"{URLs.DomainName}/{URLs.FaildUrl}{OrderId}"
             };
             return options;
         }

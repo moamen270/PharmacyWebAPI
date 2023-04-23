@@ -42,6 +42,16 @@ namespace PharmacyWebAPI.Controllers
             return Ok(obj);
         }
 
+        [HttpGet]
+        [Route("GetPrescriptionDetails/{id}")]
+        public async Task<IActionResult> GetPrescriptionDetails(int id)
+        {
+            var obj = await _unitOfWork.PrescriptionDetails.GetAllFilterAsync(p => p.PrescriptionId == id, d => d.Drug);
+            if (obj is null)
+                return NotFound();
+            return Ok(new { Order = obj });
+        }
+
         [HttpPost]
         [Route("Create")]
         public async Task<IActionResult> Create(IEnumerable<PrescriptionDetailsDto> Drugs)
@@ -97,7 +107,7 @@ namespace PharmacyWebAPI.Controllers
 
         [HttpPost]
         [Route("Dispensing/id")]
-        public async Task<IActionResult> Dispensing(int id)
+        public async Task<IActionResult> Dispensing(int id, ResponseURLsDto URLs)
         {
             /*if (!ModelState.IsValid)
                 return BadRequest(new { State = ModelState, PrescriptionId = prescriptionId });
@@ -132,13 +142,14 @@ namespace PharmacyWebAPI.Controllers
                   // print the response to the console
                   Console.WriteLine(responseString);
               }*/
+
             var orderDetails = _mapper.Map<IEnumerable<OrderDetail>>(orderDetailsDto).ToList();
             var order = new Order { UserId = "2357bf53-13ec-4199-bd9a-54331c86622e" /*user.Id*/ };
             await _unitOfWork.Order.AddAsync(order);
             await _unitOfWork.SaveAsync();
             order.OrderTotal = _unitOfWork.Order.GetTotalPrice(orderDetails);
             await _unitOfWork.OrderDetail.SetOrderId(order.Id, orderDetails);
-            var session = await _unitOfWork.Order.StripeSetting(order, orderDetails);
+            var session = await _unitOfWork.Order.StripeSetting(order, orderDetails, URLs);
             Response.Headers.Add("Location", session.Url);
             return new StatusCodeResult(303);
             /*
