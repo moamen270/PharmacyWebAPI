@@ -1,8 +1,12 @@
-﻿using Microsoft.OpenApi.Models;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using PharmacyWebAPI.DataAccess.Repository;
 using PharmacyWebAPI.Utility.Services;
 using PharmacyWebAPI.Utility.Services.IServices;
 using PharmacyWebAPI.Utility.Settings;
+using System.Text;
 
 namespace PharmacyWebAPI.Extensions
 {
@@ -21,7 +25,17 @@ namespace PharmacyWebAPI.Extensions
             services.AddSwaggerGen();
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.Configure<AuthMessageSenderOptions>(config.GetSection("SendGrid"));
-
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["TokenKey"])),
+                        ValidateIssuer = false,
+                        ValidateAudience = false
+                    };
+                });
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "EzDrugs API", Version = "v 3.1" });

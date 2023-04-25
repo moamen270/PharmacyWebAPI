@@ -2,9 +2,11 @@
 using Microsoft.AspNetCore.Authorization;
 using PharmacyWebAPI.Models;
 using PharmacyWebAPI.Models.Dto;
+using PharmacyWebAPI.Utility;
 using Stripe;
 using Stripe.Checkout;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace PharmacyWebAPI.Controllers
 {
@@ -108,18 +110,17 @@ namespace PharmacyWebAPI.Controllers
         [Route("Checkout2")]
         public async Task<IActionResult> Checkout2([FromForm] List<OrderDetailsDto> Drugs, [FromForm] ResponseURLsDto URLs)
         {
-            /*if (!ModelState.IsValid)
-            {
-                return BadRequest(new { State = ModelState, OrderDetails = Drugs });
-            }
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null)
-            {
+            // Validate and decode the JWT token
+            JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();
+            JwtSecurityToken jwtToken = tokenHandler.ReadJwtToken(URLs.token);
+
+            // Get the user ID from the token
+            string userId = jwtToken.Claims.FirstOrDefault(c => c.Type == "uid")?.Value;
+            if (userId == null)
                 return Unauthorized();
-            }*/
 
             var orderDetails = _mapper.Map<IEnumerable<OrderDetail>>(Drugs).ToList();
-            var order = new Order { UserId = "9b460198-eb98-4c3d-8457-ef6976fa53d5" /*user.Id*/ };
+            var order = new Order { UserId = userId /*user.Id*/ };
             await _unitOfWork.Order.AddAsync(order);
             await _unitOfWork.SaveAsync();
             order.OrderTotal = _unitOfWork.Order.GetTotalPrice(orderDetails);

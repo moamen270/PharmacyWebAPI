@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using PharmacyWebAPI.Models;
 using PharmacyWebAPI.Models.Dto;
+using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 
 namespace PharmacyWebAPI.Controllers
@@ -34,13 +35,40 @@ namespace PharmacyWebAPI.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            /*  var user = (await _userManager.GetUserAsync(User));
-              if (user == null)
-                  return Unauthorized();*/
-            IEnumerable<Prescription> obj = await _unitOfWork.Prescription.GetAllAsync(x => x.Patient, y => y.Doctor);
-            var list = obj.Where(x => x.Doctor.Id == "9b460198-eb98-4c3d-8457-ef6976fa53d5");
-            return Ok(obj);
+            var token = HttpContext.Request.Headers["Authorization"].FirstOrDefault().Replace("Bearer ", "");
+            var cookie = HttpContext.Request.Cookies["jwt"];
+
+            var testIt = User;
+            // Validate and decode the JWT token
+            JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();
+            JwtSecurityToken jwtToken = tokenHandler.ReadJwtToken(token);
+
+            // Get the user ID from the token
+            string userId = jwtToken.Claims.FirstOrDefault(c => c.Type == "uid")?.Value;
+
+            // Perform authorization check based on user ID
+            if (userId != null)
+            {
+                IEnumerable<Prescription> obj = await _unitOfWork.Prescription.GetAllFilterAsync(u => u.PatientId == userId, x => x.Patient, y => y.Doctor);
+
+                if (obj is null)
+                    return NotFound();
+
+                return Ok(obj);
+            }
+            return Unauthorized();
         }
+
+        /*  private var user = (await _userManager.GetUserAsync(User));
+              if (user == null)
+
+                  return private Unauthorized();
+
+          private IEnumerable<Prescription> obj = await _unitOfWork.Prescription.GetAllAsync(x => x.Patient, y => y.Doctor);
+          private var list = obj.Where(x => x.Doctor.Id == "9b460198-eb98-4c3d-8457-ef6976fa53d5");
+
+              return private Ok(obj);
+      }*/
 
         [HttpGet]
         [Route("GetPrescriptionDetails/{id}")]

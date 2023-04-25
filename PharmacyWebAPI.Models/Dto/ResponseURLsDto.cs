@@ -11,5 +11,6 @@ namespace PharmacyWebAPI.Models.Dto
         public string DomainName { get; set; }
         public string SuccessUrl { get; set; }
         public string FaildUrl { get; set; }
+        public string token { get; set; }
     }
 }

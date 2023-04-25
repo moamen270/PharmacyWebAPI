@@ -1,4 +1,5 @@
 using AutoMapper;
+using Microsoft.AspNetCore.Cors;
 using PharmacyWebAPI.Models.Dto;
 using PharmacyWebAPI.Utility.Services;
 using PharmacyWebAPI.Utility.Services.IServices;
@@ -68,7 +69,7 @@ namespace PharmacyWebAPI.Controllers
 
         [HttpPost]
         [Route("Login")]
-        public async Task<IActionResult> GetTokenAsync(LoginDto model)
+        public async Task<IActionResult> GetTokenAsync([FromForm] LoginDto model)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);

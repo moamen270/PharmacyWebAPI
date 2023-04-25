@@ -24,6 +24,17 @@ namespace PharmacyWebAPI.Controllers
             return Ok(result);
         }
 
+        [HttpPost]
+        [Route("redirect")]
+        public IActionResult tryRedirect()
+        {
+            /*using var client = new HttpClient();*/
+
+            /*            var result = await client.GetStringAsync("https://localhost:44332/api/category/getall");
+            */
+            return Redirect("google.com");
+        }
+
         /*
          * using System.Text;
         using Newtonsoft.Json;
