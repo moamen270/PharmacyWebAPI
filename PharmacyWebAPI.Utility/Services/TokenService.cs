@@ -142,5 +142,15 @@ namespace PharmacyWebAPI.Utility.Services
 
             return jwtSecurityToken;
         }
+
+        public string DataFromToken(string token, Func<Claim, bool> selector)
+        {
+            JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();
+            JwtSecurityToken jwtToken = tokenHandler.ReadJwtToken(token);
+
+            var data = jwtToken.Claims.FirstOrDefault(selector)?.Value;
+
+            return data;
+        }
     }
 }

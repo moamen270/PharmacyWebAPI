@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Authorization;
 using PharmacyWebAPI.Models;
 using PharmacyWebAPI.Models.Dto;
 using PharmacyWebAPI.Utility;
+using PharmacyWebAPI.Utility.Services;
+using PharmacyWebAPI.Utility.Services.IServices;
 using Stripe;
 using Stripe.Checkout;
 using System.Collections.Generic;
@@ -17,30 +19,37 @@ namespace PharmacyWebAPI.Controllers
         private readonly IUnitOfWork _unitOfWork;
         private readonly UserManager<User> _userManager;
         private readonly IMapper _mapper;
+        private readonly ITokenService _tokenService;
 
-        public OrderController(IUnitOfWork unitOfWork, UserManager<User> userManager, IMapper mapper)
+        public OrderController(IUnitOfWork unitOfWork, UserManager<User> userManager, IMapper mapper, ITokenService tokenService)
         {
             _unitOfWork = unitOfWork;
             _userManager = userManager;
             _mapper = mapper;
+            _tokenService = tokenService;
         }
 
         [HttpGet]
         [Route("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
-            var obj = await _unitOfWork.Order.GetFirstOrDefaultAsync(p => p.Id == id);
+            var obj = await _unitOfWork.Order.GetAsync(id);
             if (obj is null)
                 return NotFound();
-            await _unitOfWork.OrderDetail.GetAllAsync(f => f.OrderId == obj.Id);
             return Ok(new { Order = obj });
         }
 
         [HttpGet]
-        [Route("GetUserOrders/{id}")]
-        public async Task<IActionResult> GetUserOrders(string id)
+        [Route("GetUserOrders")]
+        public async Task<IActionResult> GetUserOrders()
         {
-            var obj = await _unitOfWork.Order.GetAllAsync(p => p.UserId == id);
+            var token = HttpContext.Request.Headers["Authorization"].FirstOrDefault().Replace("Bearer ", "");
+
+            string userId = _tokenService.DataFromToken(token, t => t.Type == "uid");
+            if (userId == null)
+                return Unauthorized();
+
+            var obj = await _unitOfWork.Order.GetAllAsync(p => p.UserId == userId);
             if (obj is null)
                 return NotFound();
             return Ok(new { Order = obj });
@@ -53,7 +62,7 @@ namespace PharmacyWebAPI.Controllers
             return Ok(new { Order = obj });
         }
 
-        [HttpGet]
+        /*[HttpGet]
         [Route("Create")]
         public IActionResult Create()
         {
@@ -62,9 +71,11 @@ namespace PharmacyWebAPI.Controllers
 
         [HttpPost]
         [Route("Checkout")]
-        public async Task<IActionResult> Checkout(/*IEnumerable<OrderDetail> Drugs*/[FromForm] ResponseURLsDto URLs)
+        public async Task<IActionResult> Checkout(IEnumerable<OrderDetail> Drugs
+
+       [FromForm] ResponseURLsDto URLs)
         {
-            /*if (!ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 return BadRequest(new { State = ModelState, OrderDetails = Drugs });
             }
@@ -72,7 +83,7 @@ namespace PharmacyWebAPI.Controllers
             if (user == null)
             {
                 return Unauthorized();
-            }*/
+            }
             var Drugs = new List<OrderDetailsDto>();
             List<Drug> drugs = new List<Drug>();
 
@@ -96,7 +107,7 @@ namespace PharmacyWebAPI.Controllers
             });
 
             var orderDetails = _mapper.Map<IEnumerable<OrderDetail>>(Drugs).ToList();
-            var order = new Order { UserId = "9b460198-eb98-4c3d-8457-ef6976fa53d5" /*user.Id*/ };
+            var order = new Order { UserId = "9b460198-eb98-4c3d-8457-ef6976fa53d5" user.Id };
             await _unitOfWork.Order.AddAsync(order);
             await _unitOfWork.SaveAsync();
             order.OrderTotal = _unitOfWork.Order.GetTotalPrice(orderDetails);
@@ -104,21 +115,16 @@ namespace PharmacyWebAPI.Controllers
             var session = await _unitOfWork.Order.StripeSetting(order, orderDetails, URLs);
             Response.Headers.Add("Location", session.Url);
             return new StatusCodeResult(303);
-        }
+        }*/
 
         [HttpPost]
         [Route("Checkout2")]
         public async Task<IActionResult> Checkout2([FromForm] List<OrderDetailsDto> Drugs, [FromForm] ResponseURLsDto URLs)
         {
-            // Validate and decode the JWT token
-            JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();
-            JwtSecurityToken jwtToken = tokenHandler.ReadJwtToken(URLs.token);
+            string userId = _tokenService.DataFromToken(URLs.token, token => token.Type == "uid");
 
-            // Get the user ID from the token
-            string userId = jwtToken.Claims.FirstOrDefault(c => c.Type == "uid")?.Value;
             if (userId == null)
                 return Unauthorized();
-
             var orderDetails = _mapper.Map<IEnumerable<OrderDetail>>(Drugs).ToList();
             var order = new Order { UserId = userId /*user.Id*/ };
             await _unitOfWork.Order.AddAsync(order);
@@ -147,7 +153,7 @@ namespace PharmacyWebAPI.Controllers
         [Route("OrderConfirmation/{id}")]
         public async Task<IActionResult> OrderConfirmation(int id)
         {
-            Order order = await _unitOfWork.Order.GetFirstOrDefaultAsync(u => u.Id == id);
+            Order order = await _unitOfWork.Order.GetAsync(id);
             if (order.PaymentStatus != SD.PaymentStatusPending)
             {
                 var service = new SessionService();
@@ -168,7 +174,7 @@ namespace PharmacyWebAPI.Controllers
         [Route("Denied/{id}")]
         public async Task<IActionResult> Denied(int id)
         {
-            var order = await _unitOfWork.Order.GetFirstOrDefaultAsync(d => d.Id == id);
+            var order = await _unitOfWork.Order.GetAsync(id);
             _unitOfWork.Order.Delete(order);
             await _unitOfWork.SaveAsync();
             return Ok(new { success = false, message = "Order Denied" });
