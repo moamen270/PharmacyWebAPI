@@ -2,6 +2,8 @@
 using Newtonsoft.Json;
 using PharmacyWebAPI.Models;
 using PharmacyWebAPI.Models.Dto;
+using PharmacyWebAPI.Utility.Services.IServices;
+using Stripe.Checkout;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 
@@ -14,12 +16,14 @@ namespace PharmacyWebAPI.Controllers
         private readonly IUnitOfWork _unitOfWork;
         private readonly UserManager<User> _userManager;
         private readonly IMapper _mapper;
+        private readonly ITokenService _tokenService;
 
-        public PrescriptionController(IUnitOfWork unitOfWork, UserManager<User> userManager, IMapper mapper)
+        public PrescriptionController(IUnitOfWork unitOfWork, UserManager<User> userManager, IMapper mapper, ITokenService tokenService)
         {
             _unitOfWork = unitOfWork;
             _userManager = userManager;
             _mapper = mapper;
+            _tokenService = tokenService;
         }
 
         [HttpGet]
@@ -36,39 +40,17 @@ namespace PharmacyWebAPI.Controllers
         public async Task<IActionResult> GetAll()
         {
             var token = HttpContext.Request.Headers["Authorization"].FirstOrDefault().Replace("Bearer ", "");
-            var cookie = HttpContext.Request.Cookies["jwt"];
 
-            var testIt = User;
-            // Validate and decode the JWT token
-            JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();
-            JwtSecurityToken jwtToken = tokenHandler.ReadJwtToken(token);
+            string userId = _tokenService.DataFromToken(token, t => t.Type == "uid");
 
-            // Get the user ID from the token
-            string userId = jwtToken.Claims.FirstOrDefault(c => c.Type == "uid")?.Value;
-
+            if (userId == null)
+                return Unauthorized();
             // Perform authorization check based on user ID
-            if (userId != null)
-            {
-                IEnumerable<Prescription> obj = await _unitOfWork.Prescription.GetAllFilterAsync(u => u.PatientId == userId, x => x.Patient, y => y.Doctor);
-
-                if (obj is null)
-                    return NotFound();
-
-                return Ok(obj);
-            }
-            return Unauthorized();
+            var obj = await _unitOfWork.Prescription.GetAllFilterAsync(u => u.PatientId == userId, x => x.Patient, y => y.Doctor);
+            if (obj is null)
+                return NotFound();
+            return Ok(obj);
         }
-
-        /*  private var user = (await _userManager.GetUserAsync(User));
-              if (user == null)
-
-                  return private Unauthorized();
-
-          private IEnumerable<Prescription> obj = await _unitOfWork.Prescription.GetAllAsync(x => x.Patient, y => y.Doctor);
-          private var list = obj.Where(x => x.Doctor.Id == "9b460198-eb98-4c3d-8457-ef6976fa53d5");
-
-              return private Ok(obj);
-      }*/
 
         [HttpGet]
         [Route("GetPrescriptionDetails/{id}")]
@@ -81,23 +63,19 @@ namespace PharmacyWebAPI.Controllers
         }
 
         [HttpPost]
-        [Route("Create")]
-        public async Task<IActionResult> Create(IEnumerable<PrescriptionDetailsDto> Drugs)
+        [Route("Create/{id}")]
+        public async Task<IActionResult> Create(string id, IEnumerable<PrescriptionDetailsDto> Drugs)
         {
-            /*
             if (!ModelState.IsValid)
             {
-                return BadRequest(drugs);
+                return BadRequest(Drugs);
             }
-            if (await _userManager.FindByIdAsync(viewModel.PatientId) == null)
-            {
-                return BadRequest(drugs);
-            }
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null)
-                return Unauthorized(drugs);*/
+            var token = HttpContext.Request.Headers["Authorization"].FirstOrDefault().Replace("Bearer ", "");
 
-            var prescription = new Prescription() { DoctorId = "9b460198-eb98-4c3d-8457-ef6976fa53d5", PatientId = "f12913db-9cfd-47fe-8969-9d07780b6263", };
+            string userId = _tokenService.DataFromToken(token, t => t.Type == "uid");
+            if (userId == null)
+                return Unauthorized();
+            var prescription = new Prescription() { DoctorId = "userId", PatientId = id, };
             await _unitOfWork.Prescription.AddAsync(prescription);
             await _unitOfWork.SaveAsync();
             var drugs = _mapper.Map<IEnumerable<PrescriptionDetails>>(Drugs).ToList();
@@ -134,68 +112,59 @@ namespace PharmacyWebAPI.Controllers
         }
 
         [HttpPost]
-        [Route("Dispensing/id")]
-        public async Task<IActionResult> Dispensing(int id, ResponseURLsDto URLs)
+        [Route("Dispensing/{id}")]
+        public async Task<IActionResult> Dispensing(int id, [FromForm] ResponseURLsDto URLs)
         {
-            /*if (!ModelState.IsValid)
-                return BadRequest(new { State = ModelState, PrescriptionId = prescriptionId });
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null)
+            string userId = _tokenService.DataFromToken(URLs.token, token => token.Type == "uid");
+
+            if (userId == null)
                 return Unauthorized();
-            var prescription = await _unitOfWork.Prescription.GetFirstOrDefaultAsync(p => p.Id == prescriptionId);
-            if (prescription == null)
-                return NotFound();*/
 
             var prescriptionDetails = await _unitOfWork.PrescriptionDetails.GetAllFilterAsync(p => p.PrescriptionId == id);
-            var orderDetailsDto = _unitOfWork.PrescriptionDetails.PrescriptionDetailsToOrderDetails(prescriptionDetails.ToList());
-            /*  using (var client = new HttpClient())
-              {
-                  var url = "https://localhost:44332/Order/Checkout"; // replace with the actual API endpoint
+            var orderDetails = _unitOfWork.PrescriptionDetails.PrescriptionDetailsToOrderDetails(prescriptionDetails.ToList());
 
-                  // create an object to hold the data you want to submit
-                  var data = orderDetailsdto;
-
-                  // convert the data to a JSON string
-                  var json = Newtonsoft.Json.JsonConvert.SerializeObject(data);
-
-                  // create a StringContent object from the JSON string
-                  var content = new StringContent(json, Encoding.UTF8, "application/json");
-
-                  // send the POST request and wait for the response
-                  var response = await client.PostAsync(url, content);
-
-                  // read the response content as a string
-                  var responseString = await response.Content.ReadAsStringAsync();
-
-                  // print the response to the console
-                  Console.WriteLine(responseString);
-              }*/
-
-            var orderDetails = _mapper.Map<IEnumerable<OrderDetail>>(orderDetailsDto).ToList();
-            var order = new Order { UserId = "2357bf53-13ec-4199-bd9a-54331c86622e" /*user.Id*/ };
+            var order = new Order { UserId = userId };
             await _unitOfWork.Order.AddAsync(order);
             await _unitOfWork.SaveAsync();
+
+            var presc = await _unitOfWork.Prescription.GetFirstOrDefaultAsync(p => p.Id == id);
+            presc.OrderId = order.Id;
+            await _unitOfWork.SaveAsync();
+
             order.OrderTotal = _unitOfWork.Order.GetTotalPrice(orderDetails);
             await _unitOfWork.OrderDetail.SetOrderId(order.Id, orderDetails);
             var session = await _unitOfWork.Order.StripeSetting(order, orderDetails, URLs);
             Response.Headers.Add("Location", session.Url);
             return new StatusCodeResult(303);
-            /*
-                        var httpClient = new HttpClient();
-                        var drugs = orderDetailsDto; // populate with order details
-                        var jsonContent = Newtonsoft.Json.JsonConvert.SerializeObject(drugs);
-                        var httpContent = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+        }
 
-                        var response = await httpClient.PostAsync("https://localhost:44332/Order/Checkout", httpContent);
+        [HttpGet]
+        [Route("OrderConfirmation/{id}")]
+        public async Task<IActionResult> OrderConfirmation(int id)
+        {
+            var order = await _unitOfWork.Order.GetFirstOrDefaultAsync(o => o.Id == id);
+            var prescription = await _unitOfWork.Prescription.GetFirstOrDefaultAsync(p => p.OrderId == id);
 
-                        if (response.IsSuccessStatusCode)
-                        {
-                            return Ok(response);
-                        }
-                        else
-                        {
-                            return BadRequest(response);
-                        }*/
+            var service = new SessionService();
+            Session session = service.Get(order.SessionId);
+            //check the stripe status
+            _unitOfWork.Order.UpdateStatus(id, SD.StatusApproved, SD.PaymentStatusApproved);
+            prescription.Dispensing = true;
+            await _unitOfWork.SaveAsync();
+
+            //_emailSender.SendEmailAsync(orderHeader.ApplicationUser.Email, "New Order - Pharmacy App", "<p>New Order Created</p>");
+
+            return Ok(new { success = true, message = "Order Confirm Successfully", OrderId = id });
+        }
+
+        [HttpGet]
+        [Route("Denied/{id}")]
+        public async Task<IActionResult> Denied(int id)
+        {
+            var order = await _unitOfWork.Order.GetFirstOrDefaultAsync(o => o.Id == id);
+            _unitOfWork.Order.Delete(order);
+            await _unitOfWork.SaveAsync();
+            return Ok(new { success = false, message = "Order Denied" });
         }
     }
 }

@@ -22,13 +22,13 @@ namespace PharmacyWebAPI.DataAccess.Repository
             await _context.SaveChangesAsync();
         }
 
-        public List<OrderDetailsDto> PrescriptionDetailsToOrderDetails(List<PrescriptionDetails> prescriptionDetails)
+        public List<OrderDetail> PrescriptionDetailsToOrderDetails(List<PrescriptionDetails> prescriptionDetails)
         {
-            var details = new List<OrderDetailsDto>();
+            var details = new List<OrderDetail>();
             foreach (var item in prescriptionDetails)
             {
-                var drug = _context.Drugs.Find(item.DrugId);
-                details.Add(new OrderDetailsDto
+                var drug = _context.Drugs.FirstOrDefault(i => i.Id == item.DrugId);
+                details.Add(new OrderDetail
                 {
                     Count = 1,
                     DrugId = item.DrugId,
