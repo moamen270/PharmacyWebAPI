@@ -34,6 +34,37 @@ namespace PharmacyWebAPI.Controllers
         }
 
         [HttpGet]
+        [Route("fixPrice")]
+        public async Task<IActionResult> fixPrice()
+        {
+            var drugs = await _unitOfWork.Drug.GetAllAsync();
+            foreach (var drug in drugs)
+                drug.Price = (int)drug.Price;
+
+            _unitOfWork.Drug.UpdateRange(drugs);
+            await _unitOfWork.SaveAsync();
+            return Ok();
+        }
+
+        [HttpGet]
+        [Route("fixStock")]
+        public async Task<IActionResult> fixStock()
+        {
+            var drugs = await _unitOfWork.Drug.GetAllAsync();
+            foreach (var drug in drugs)
+            {
+                if (drug.Stock <= 1)
+                {
+                    drug.Stock += 10;
+                }
+            }
+
+            _unitOfWork.Drug.UpdateRange(drugs);
+            await _unitOfWork.SaveAsync();
+            return Ok();
+        }
+
+        [HttpGet]
         public async Task<IActionResult> GetAll()
         {
             IEnumerable<Drug> Drug = await _unitOfWork.Drug.GetAllAsync(c => c.Category, z => z.Manufacturer);
