@@ -10,6 +10,8 @@
 
         T Update(T entity);
 
+        IEnumerable<T> UpdateRange(IEnumerable<T> entity);
+
         T Delete(T entity);
 
         Task<int> CountAsync();

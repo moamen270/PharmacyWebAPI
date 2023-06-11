@@ -41,14 +41,6 @@ namespace PharmacyWebAPI.Extensions
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "EzDrugs API", Version = "v 3.1" });
             });
 
-            services.AddCors(p => p.AddPolicy("corsapp", builder =>
-            {
-                builder.WithOrigins("https://api.ezdrug.tech")
-                       .AllowAnyOrigin()
-                       .AllowAnyMethod()
-                       .AllowAnyHeader();
-            }));
-
             return services;
         }
     }

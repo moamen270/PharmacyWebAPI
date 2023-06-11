@@ -79,7 +79,7 @@ namespace PharmacyWebAPI.DataAccess.Repository
                         PriceData = new SessionLineItemPriceDataOptions
                         {
                             UnitAmount = (long)(item.Price * 100), // 20.00 -> 2000
-                            Currency = "usd",
+                            Currency = "le",
                             ProductData = new SessionLineItemPriceDataProductDataOptions
                             {
                                 Name = drug.Name,

@@ -1,8 +1,11 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Cors;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using PharmacyWebAPI.Models.Dto;
 using PharmacyWebAPI.Utility.Services;
 using PharmacyWebAPI.Utility.Services.IServices;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace PharmacyWebAPI.Controllers
 {
@@ -181,6 +184,49 @@ namespace PharmacyWebAPI.Controllers
                 return BadRequest(result);
 
             return Ok(model);
+        }
+
+        [HttpGet("Decrypt")]
+        public IActionResult Decrypt(string cipheredtextString)
+        {
+            try
+            {
+                string x = "Bq8KD/J98BU6CRrTSjem6Q==";
+                byte[] key = Encoding.UTF8.GetBytes(x);
+                Array.Resize(ref key, 16);
+
+                string y = "EnvvZa61Min/2zSVMVno+w==";
+                byte[] iv = Encoding.UTF8.GetBytes(y);
+                Array.Resize(ref iv, 16);
+                byte[] cipheredtext = Convert.FromBase64String(cipheredtextString);
+
+                var simpletext = Decrypt(cipheredtext, key, iv);
+                return Ok(simpletext);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("Wrong Key");
+            }
+        }
+
+        private string Decrypt(byte[] cipheredtext, byte[] key, byte[] iv)
+        {
+            string simpletext = String.Empty;
+            using (Aes aes = Aes.Create())
+            {
+                ICryptoTransform decryptor = aes.CreateDecryptor(key, iv);
+                using (MemoryStream memoryStream = new MemoryStream(cipheredtext))
+                {
+                    using (CryptoStream cryptoStream = new CryptoStream(memoryStream, decryptor, CryptoStreamMode.Read))
+                    {
+                        using (StreamReader streamReader = new StreamReader(cryptoStream))
+                        {
+                            simpletext = streamReader.ReadToEnd();
+                        }
+                    }
+                }
+            }
+            return simpletext;
         }
     }
 }

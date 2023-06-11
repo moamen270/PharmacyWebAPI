@@ -79,5 +79,11 @@ namespace PharmacyWebAPI.DataAccess.Repository
             _context.Update(entity);
             return entity;
         }
+
+        public IEnumerable<T> UpdateRange(IEnumerable<T> entity)
+        {
+            _context.UpdateRange(entity);
+            return entity;
+        }
     }
 }
