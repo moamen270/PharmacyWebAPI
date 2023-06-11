@@ -40,6 +40,27 @@ namespace PharmacyWebAPI.Controllers
         }
 
         [HttpGet]
+        [Route("DrugMachine/{id}")]
+        public async Task<IActionResult> DrugMachine(int id)
+        {
+            var obj = await _unitOfWork.OrderDetail.GetAllFilterAsync(x => x.OrderId == id, d => d.Drug);
+            var drugId = obj.FirstOrDefault().DrugId;
+            if (obj is null || drugId is < 0)
+                return NotFound();
+            return Ok(drugId);
+        }
+
+        [HttpGet]
+        [Route("OrderDetails/{id}")]
+        public async Task<IActionResult> OrderDetails(int id)
+        {
+            var obj = await _unitOfWork.OrderDetail.GetAllFilterAsync(x => x.OrderId == id, d => d.Drug);
+            if (obj is null)
+                return NotFound();
+            return Ok(obj);
+        }
+
+        [HttpGet]
         [Route("GetUserOrders")]
         public async Task<IActionResult> GetUserOrders()
         {
